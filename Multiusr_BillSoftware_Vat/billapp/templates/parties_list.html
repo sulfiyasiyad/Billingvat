@@ -1,0 +1,566 @@
+{% extends 'base.html' %}
+{% load social_share %}
+{% load static %}
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.6"
+    integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+<!-- Include html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+<script src="https://unpkg.com/htmx.org@1.9.6"
+    integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+    crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    
+
+<style>
+    .bs {
+        box-shadow: 2px 2px 10px 3px rgba(0, 0, 0, 0.397);
+    }
+
+    .tb {
+        color: black;
+    }
+
+    .tg {
+        color: white;
+    }
+
+    .tr {
+        color: rgb(218, 0, 0);
+    }
+
+    .btn_add {
+        background-color: #FFADB0;
+        color: black;
+    }
+
+    .btn_add:hover {
+        background-color: #FFADB0;
+        color: black;
+    }
+
+    #add_btn {
+        border: 2px solid #68020F;
+        color: black;
+    }
+
+    #add_btn:hover {
+        background-color: #68020F;
+        color: white;
+    }
+
+    ::-webkit-scrollbar {
+        display: none
+    }
+
+    @media screen and (max-width:575px) {
+        #searchdiv {
+            width: 10%;
+        }
+    }
+
+    /* #myTable tbody:hover td:not(:last-child) {
+        border-right: 1px solid #044A42;
+    } */
+    /* 
+    #myTable tbody:hover td {
+        cursor: pointer;
+        background-color: white;
+    } */
+</style>
+
+{% if party %}
+<div class="body-wrapper">
+    <br><br><br><br><br><br>
+    <div class="row ps-3 pe-3 m-0">
+        <div class="col-sm-12 col-lg-3  ps-2 pe-3 pb-2" style="height: 50rem;">
+            <div class="card bg-light bs" style="height:100%;">
+                <div class="row m-0">
+                    <div class="col-12 p-4 pt-3" style="z-index:2">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="d-flex justify-content-between">
+                                <!-- <span id="search_item" class="fa fa-search tb ms-2 mt-1"
+                                    style="border-radius: 50%;padding: 0.77rem; background-color: #FFADB0; color: black;"></span> -->
+                                <a id="add_item_btn" class="btn btn-sm rounded p-2 mt-1 btn_add" style="margin-left: 149px;"
+                                    href="{% url 'load_party_create' %}"><span class="fa fa-plus"></span> Add Party</a>
+                            </div>
+
+                            <input id="search_item_input" class="form-control border-dark text-dark mt-2" type="text"
+                                placeholder="search here.." name="searching_item" hx-post="" hx-trigger="keyup"
+                                hx-target="#item_search_filter_target" style="display: none;">
+                        </form>
+                    </div>
+                    <div class="ps-3 pe-3">
+                        <hr class="p-0 m-0">
+                    </div>
+                    <div class="col-12 p-3 pt-0">
+                        <div id="item_search_filter_target">
+                            <form action="" method="post">
+                                {% csrf_token %}
+
+                                <div style="overflow: auto;height: 42rem;">
+                                    <table class="table w-100 table-hover">
+                                        <thead style="background: #68020F;">
+                                            <th class="text-start fs-2 tb text-light">PARTY</th>
+                                            <th class="text-end fs-2 tb text-light">AMOUNT</th>
+                                        </thead>
+                                        <tbody>
+                                            {% for p in party %}
+                                            <tr class="item_lists_hide" style="background-color: #FFD6D7;">
+                                                <td style="cursor:pointer" class="text-start fs-2 fw-bold text-dark"
+                                                    hx-post="" hx-trigger="click delay:0s"
+                                                    hx-target="#item_get_detail_target">
+                                                    <a href="{% url 'view_party' p.id %}" style="color: black; ">{{ p.party_name|capfirst }}</a>
+                                                       
+                                                </td>
+                                                <td style=" position: relative; padding-left: 60px;">
+                                                    {% if p.payment == 'To Pay' %}
+                                                    <span style="border: none; color: red; ">{{p.openingbalance}}</span>
+                                                    {% elif p.payment == 'To Receive' %}
+                                                    <span style=" color: green; ">{{ p.openingbalance }}</span>
+                                                    {% else %}
+                                                    <span style="color: black; ">{{ p.openingbalance }}</span>
+                                                    {% endif %}
+                                                    <span class="three-dots"
+                                                        style="cursor: pointer; position: absolute; top: 50%; transform: translateY(-50%); right: 10px;"
+                                                        onclick="toggleDropdown(this)">&#8942;</span>
+                                              
+                                                    
+                                                    <div class="dropdown-menu" style="display: none; position: absolute; right: 0;">
+                                                    
+                                                        <a class="dropdown-item" href="{% url 'details_party' p.id %}">View</a>
+                                                      
+                                                        <a class="dropdown-item" href="{% url 'edit_party' p.id %}">Edit</a>
+                                                        <a class="dropdown-item" href="{% url 'deleteparty' p.id %}" >Delete Party</a>
+                                                        <a class="dropdown-item" href="{% url 'history_party' p.id %}" >History</a>
+                                                        
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-12 col-lg-9  ps-2 pe-3" style="height: 80%;">
+            <div id="item_get_detail_target">
+                <div class="row m-0" style="height:20%">
+                    <div class="p-3 mb-3">
+                        <div id="content1" class="p-4" style="background-color: #FFADB0; border-radius: 1vh;">
+                            <div class="d-flex justify-content-between">
+                                <h4 class="tb text-capitalize" style="color: black;">{{ fparty.party_name }}</h4>
+                                <!-- <button class="btn btn-sm fs-2" data-bs-toggle="modal" data-bs-target="#myModal1"
+                                    data-bs-whatever="@getbootstrap" hx-get="" hx-trigger="click delay:0s"
+                                    hx-target="#item_get_details_for_modal_target"
+                                    style="background-color: #68020F; color: white;">
+                                    <span class="fa fa-sliders-h pe-1"></span> ADJUST STOCK
+                                </button> -->
+                            </div>
+                            <p></p>
+                            <div class="d-flex justify-content-between" style="color: black;">
+                                <p class="tb fw-bolder fs-2">PHONE <span class="ps-2 tg" style="color: black;"> -
+                                        &nbsp;&nbsp; {{ fparty.contact }}</span></p>
+                                <p class="tb fw-bolder fs-2">ADDRESS <span class="ps-2 tg" style="color: black;"> -
+                                        &nbsp;&nbsp; {{ fparty.address }}</span></p>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <p class="tb fw-bolder fs-2">EMAIL <span class="ps-2 tg" style="color: black;"> -
+                                        &nbsp;&nbsp; {{ fparty.email }}</span></p>
+                                <p class="tb fw-bolder fs-2">TRN NO <span class="ps-2 tg" style="color: black;"> -
+                                        &nbsp;&nbsp; {{ fparty.trn_no }}</span></p>
+                            </div>
+                        </div>
+                        
+                        <hr style="height: .5%;">
+                        <div class="row m-0 p-0 pt-3" >
+                            <div class="col-sm-12 col-lg-12">
+                                <h4>TRANSACTIONS</h4>
+                                <div class="d-flex justify-content-between">
+                                    <div id="searchdiv">
+                                        <div class="position-relative">
+                                            <div class="position-absolute"
+                                                style="margin-top:0.4rem;margin-left: 0.5rem;">
+                                                <span class="fa fa-search fs-5 text-danger"></span>
+                                            </div>
+                                        </div>
+
+                                        <input id="search_input1"
+                                            style="padding-inline-start: 2rem; width:200%; border: 1px solid #062925;"
+                                            class="text-dark pt-1 pb-1 pe-1 rounded" type="text"
+                                            placeholder=" search here..">
+                                    </div>
+                                    <div>
+                                        <button class="btn p-0 ps-2 pe-2 ms-2" type="button" onclick="exportToExcel()"
+                                            style="color: #FF474D;">
+                                            <i class="fas fa-file-excel" style="font-size:175%;"></i><br>EXCEL
+                                        </button>
+                                        <button class="btn p-0 ps-2 pe-2 ms-2" type="button" onclick="generatePDF()"
+                                            style="color: #FF474D;">
+                                            <i class="fas fa-file-pdf" style="font-size:175%;"></i><br>PDF
+                                        </button>
+                                        <a class="text-dark" data-toggle="dropdown">
+                                            <button class="btn p-0 ps-2 pe-2 ms-2" type="button" style="color: #FF474D;" title="Share"><i class="fa fa-share" aria-hidden="true" style="font-size:175%;"></i> <br> SHARE</button>
+                                        </a>
+                                        <div class="dropdown-menu ">
+                                            <a class="dropdown-item" data-target="#shareBillEmail"
+                                                data-toggle="modal">GMAIL</a>
+                                            <a class="dropdown-item" href="javascript:void(0);"
+                                                onclick="shareOnWhatsApp()">WhatsApp</a>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3" style="overflow: scroll;height: 31rem;" id="content2">
+                                <table id="myTable"
+                                    class="table table-bordered  tb table-responsive w-100 table-stripped table-hover text-dark ">
+                                    <thead style="background: #68020F; color: white;">
+
+                                        <th>#</th>
+                                        <th class="text-center fs-2">TYPE <span class="fa fa-filter ps-1 fs-1"></span>
+                                        </th>
+                                        <th class="text-center fs-2">NUMBER <span class="fa fa-filter ps-1 fs-1"></span>
+                                        </th>
+
+                                        <th class="text-center fs-2">DATE <span class="fa fa-filter ps-1 fs-1"></span>
+                                        </th>
+                                        <th class="text-center fs-2">TOTAL <span class="fa fa-filter ps-1 fs-1"></span>
+                                        </th>
+                                        <th class="text-center fs-2">BALANCE <span
+                                                class="fa fa-filter ps-1 fs-1"></span></th>
+                                                <!-- <th class="text-center fs-2"></th> -->
+                                    </thead>
+
+                                    <tbody>
+                                        {% for i in ftrans %}
+                                        <tr>
+                                            <td>{{ forloop.counter}}</td>
+                                            <td class="name" style="color: black;">{{i.trans_type}}</td>
+                                            <!-- <td class="name" style="color: black;">
+                                                {% if i.opening_balance_status == 'To Pay' %}
+                                                    Payable Opening Balance
+                                                {% elif i.opening_balance_status == 'To Receive' %}
+                                                    Receivable Opening Balance
+                                                {% else %}
+                                                    {{ i.trans_type }}
+                                                {% endif %} -->
+                                            </td>
+                                            <td class="number name" style="color: black;">{{ i.trans_number }}</td>
+                                            <td class="date name" style="color: black;">{{ i.trans_date | date:'d-m-Y' }}</td>
+                                            <td class="number" style="color: black;">{{ i.total }}</td>
+                                            <td class="number" style="color: black;">{{ i.balance }}</td>
+                                            <!-- <td class="p-0 pt-1 m-0">
+                                      
+                                                <div class="btn-group mb-1">
+                                                    <button style="border: none;background: none;" type="button" class="ropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <span class="fa fa-ellipsis-v text-dark fs-1 ps-"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                    <li><button type="button" data-bs-toggle="modal" data-bs-target="#myModal2" class="dropdown-item fw-bold tb hide_table_text_v" 
+                                                        hx-get=""
+                                                        hx-trigger="click delay:0s"
+                                                        hx-target="#item_transaction_view_or_edit_target"
+                                                        ><span class="fa fa-eye pe-2 tg"></span> <a href="{% url 'edit_party' i.id %}">View / Edit</a> </button></li>
+                                                    <li><button type="button" onclick="delete_transaction()" class="dropdown-item fw-bold tb hide_table_text_d" href=""><span class="fa fa-trash-alt tr" style="padding-inline-start: 0.1rem;padding-inline-end:0.7rem ;"></span> Delete</button></li>
+                                                    </ul>
+                                                </div>
+                                              
+                                            </td>   -->
+                                          
+
+
+    
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="shareBillEmail">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" style="background: #68020F; border-radius: 20px;">
+                <div class="modal-header" style="background: #68020F;">
+                    <h5 class="m-3 text-uppercase text-light" id="shareBillEmailLabel">Share Gstr9 Via Email</h5>
+                    <button type="button" class="btn btn-close btn-outline-light" data-dismiss="modal" aria-label="Close" ></button>
+                </div>
+                <div class="modal-body" style="background: #68020F;">
+                    <div class="card p-3 m-3" >
+                        <form action="{% url 'share_transaction_party_to_email' id=fparty.id %}" method="post" class="needs-validation"
+                            id="share_to_email_form" autocomplete="off" >
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="emailIds">Email IDs</label>
+                                <textarea  class="form-control text-dark" name="email_ids" id="emailIds" rows="3"
+                                    placeholder="Multiple emails can be added by separating with a comma(,)."
+                                    required></textarea>
+                            </div>
+                            <div class="form-group mt-2">
+                                <label for="item_unitname">Message(optional)</label>
+                                <textarea name="email_message" id="email_message" class="text-dark form-control" cols=""
+                                    rows="3" placeholder="This message will be sent along with Bill details."></textarea>
+                            </div>
+                            <div class="modal-footer d-flex justify-content-center" style="border-top: 1px solid #ffff;">
+                                <button style="background: #68020F; color: white;" type="submit" id="share_with_email"
+                                    class=" btn btn-outline-dark  submitShareEmailBtn " value="SEND MAIL">SEND MAIL</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <div class="body-wrapper">
+        <br><br><br>
+        <div class="p-5 text-center" style="display: flex;justify-content: center;">
+            <div class="card "
+                style="background-color: #FFD6D7;width:50rem;box-shadow: 5px 5px 10px 5px rgba(0, 0, 0, 0.249);">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="rounded pt-3" style="border: 1px solid rgba(0, 0, 0, 0);border-bottom: none;">
+                            <h1 style="font-weight:900;color:rgba(0, 0, 0, 0.644);font-size: 1.5rem;">MULTIUSER BILLING
+                                SOFTWARE</h1>
+                            <p class="card-text">Welcome to Multiuser Billing Software, We're committed to providing a
+                                seamless and secure online marketplace for buyers and sellers. Our platform offers a
+                                range
+                                of features.</p>
+                            <p style="color: rgb(0, 89, 10);font-weight: light;" class="card-text">You can manage all
+                                you
+                                Parties here.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3"></div>
+                    <div class="col-sm-12 col-md-6 pb-3">
+                        <img src="https://cdn-cashy-static-assets.lucidchart.com/marketing/pages/consideration-page/UML-Diagram-Maker/Consideration_UML_perfect.png" class="card-img" alt="no img">
+                        <br><br>
+                        <a class="btn btn-lg" href="{% url 'load_party_create' %}" id="add_btn">Add Your First party</a>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+
+
+
+
+    <script>
+
+        $(document).ready(function () {
+            $('#share_with_email').on('click', function () {
+                var emailsInput = document.getElementById('emailIds');
+                var emailsString = emailsInput.value.trim();
+    
+                var emails = emailsString.split(',').map(function (email) {
+                    return email.trim();
+                });
+    
+                var emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    
+                var invalidEmails = []
+                if (emailsString == "") {
+                    alert('Enter valid email addresses..')
+                }
+                else {
+                    for (var i = 0; i < emails.length; i++) {
+                        var currentEmail = emails[i];
+    
+                        if (currentEmail != "" && !emailRegex.test(currentEmail)) {
+                            console.log(currentEmail + ' is invalid!');
+                            invalidEmails.push(currentEmail)
+                        }
+                    }
+    
+                    if (invalidEmails.length > 0) {
+                        alert('Invalid emails..Please check!\n' + invalidEmails)
+                        // alert(invalidEmails)
+                    } else {
+                        $('#share_to_email_form').submit();
+                    }
+                }
+            })
+        });
+    </script>
+
+
+
+
+
+
+
+
+    <script>
+
+function exportToExcel() {
+                const table = document.getElementById('content2');
+                const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+                XLSX.writeFile(wb, "Party_transaction.xlsx");
+            }
+
+
+    
+            // function exportToPDF() {
+            //     var content = document.getElementById('print_export_section');
+
+            //     var opt = {
+            //         margin: 0.1,
+            //         filename: 'transaction.pdf',
+            //         image: { type: 'jpeg', quality: 0.98 },
+            //         html2canvas: { scale: 2 },
+            //         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            //     };
+
+            //     html2pdf().set(opt).from(content).save();
+            // }
+
+        // function exportToExcel() {
+        //     $('.hide_table_text_v').text('')
+        //     $('.hide_table_text_d').text('')
+        //     const table = document.getElementById('myTable');
+        //     const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+        //     XLSX.writeFile(wb, "table_data.xlsx");
+        //     $('.hide_table_text_v').html('<span class="fa fa-eye pe-2 tg"></span> View / Edit')
+        //     $('.hide_table_text_d').html('<span class="fa fa-trash-alt tr" style="padding-inline-start: 0.1rem;padding-inline-end:0.7rem ;"></span> Delete')
+        // }
+        $(document).ready(function () {
+            $("#search_input1").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#myTable tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                });
+            });
+        });
+        $(document).ready(function () {
+            $('#search_item').click(function () {
+                $('#search_item_input').toggle()
+            })
+        })
+    </script>
+
+    <script>
+        function toggleDropdown(dotsElement) {
+            var dropdownMenu = dotsElement.nextElementSibling;
+            if (dropdownMenu.style.display === 'block' || dropdownMenu.style.display === '') {
+                dropdownMenu.style.display = 'none';
+            } else {
+                dropdownMenu.style.display = 'block';
+
+                // Close the dropdown if the user clicks outside of it
+                window.addEventListener('click', function (event) {
+                    if (event.target !== dotsElement && event.target !== dropdownMenu) {
+                        dropdownMenu.style.display = 'none';
+                    }
+                });
+            }
+
+            // Prevent the click event from propagating to the window
+            event.stopPropagation();
+        }
+
+
+        function shareOnWhatsApp() {
+        var url = window.location.href;
+        var text = url;
+        text = encodeURIComponent(text);
+        var whatsappUrl = "whatsapp://send?text=" + text;
+        window.location.href = whatsappUrl;
+    }
+
+
+    </script>
+
+<!-- <script>
+    function generatePDF() {
+        // Get the element you want to convert to PDF
+        const element = document.getElementById('content2');
+
+        // Options for the PDF generation
+        const options = {
+            margin: 10,
+            filename: 'Transaction_Details.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Use html2pdf library to generate the PDF
+        html2pdf(element, options);
+    }
+</script> -->
+
+
+
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+<script>
+    function generatePDF() {
+        // Select the content of both sections
+        const content1 = document.getElementById('content1').outerHTML;
+        const content2 = document.getElementById('content2').outerHTML;
+
+        // Concatenate content1 and content2
+        const mergedContent = content1 + content2;
+
+        // Define the options for html2pdf
+        const options = {
+            margin: 10,
+            filename: 'Transaction_Report.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Use html2pdf to generate the PDF from the merged content
+        html2pdf().from(mergedContent).set(options).save();
+    }
+</script>
+
+
+
+ 
+    {% endblock content %}

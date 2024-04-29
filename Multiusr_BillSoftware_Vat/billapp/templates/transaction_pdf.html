@@ -1,0 +1,151 @@
+
+{% load static %}
+{% load social_share %}
+{% block content %}
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Document</title>
+</head>
+
+
+<style>
+     #tab_logic {
+        margin-left: 10px;
+        width: 98%;
+    }
+
+    #tab_logic thead th {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        /* background: #68020F;  */
+    }
+
+    #tab_logic tbody td {
+        border-bottom: 1px solid black;
+        border-top: 1px solid black;
+        border-left: 1px solid black;
+        border-right: 1px solid black;
+        /* background-color: rgb(255, 255, 255); */
+    }
+   
+    /* thead{
+       background: #68020F; 
+       color: white;
+
+    } */
+
+    thead{
+        background-color: #68020F;
+    }
+    .btn_add {
+        background-color: #FFADB0;
+        color: black;
+    }
+
+    .btn_add:hover {
+        background-color: #FFADB0;
+        color: black;
+    }
+
+    #add_btn {
+        border: 2px solid #68020F;
+        color: black;
+    }
+
+    #add_btn:hover {
+        background-color: #68020F;
+        color: white;
+    }
+
+    ::-webkit-scrollbar {
+        display: none
+    }
+
+    @media screen and (max-width:575px) {
+        #searchdiv {
+            width: 10%;
+        }
+    }
+</style>
+
+<body><div class="row ps-3 pe-3 m-0">
+    <div class="col-sm-12 col-lg-3  ps-2 pe-3 pb-2" style="height: 50rem;">
+        <div class="card bg-light bs" style="height:100%;">
+            <div class="row m-0">
+
+    <div class="p-4" style="background-color: #ffffff; border-radius: 1vh;">
+        <div class="d-flex justify-content-between">
+            <h4 class="tb text-capitalize" style="color: black;">{{ fparty.party_name }}</h4>
+        </div>
+        <p></p>
+        <div id="p5" class="d-flex justify-content-between" style="color: black;">
+            <p id="p1" class="tb fw-bolder fs-2">PHONE <span class="ps-2 tg" style="color: black;"> -
+                    &nbsp;&nbsp; {{ fparty.contact }}</span></p>
+        
+            <p id="p1" class="tb fw-bolder fs-2">EMAIL <span class="ps-2 tg" style="color: black;"> -
+                    &nbsp;&nbsp; {{ fparty.email }}</span></p>
+
+            <p id="p2" class="tb fw-bolder fs-2">ADDRESS <span class="ps-2 tg" style="color: black;"> -
+                    &nbsp;&nbsp; {{ fparty.address }}</span></p>
+   
+            <p id="p2" class="tb fw-bolder fs-2">TRN NO <span class="ps-2 tg" style="color: black;"> -
+                    &nbsp;&nbsp; {{ fparty.trn_no }}</span></p>
+        </div>
+    </div>
+    <div class=" bg-light bg-light pb-0 mb-0 p-2" style="height: 50px; width:100px;">
+       
+
+        <table id="tab_logic" class="table table-bordered table-responsive table-stripped table-hover text-dark ">
+            <thead >
+                <tr >
+                    <th>#</th>
+                    <th class="text-center ">TYPE</th>                   
+                    <th class="text-center ">NUMBER</th>
+                    <th class="text-center ">DATE</th>
+                    <th class="text-center ">TOTAL</th>
+                    <th class="text-center ">BALANCE </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+                {% for i in ftrans %}
+                <tr>
+                    <td>{{ forloop.counter}}</td>
+                    <td class="name" style="color: black;">{{i.trans_type}}</td>
+                    <td class="number name" style="color: black;">{{ i.trans_number }}</td>
+                    <td class="date name" style="color: black;">{{ i.trans_date | date:'d-m-Y' }}</td>
+                    <td class="number" style="color: black;">{{ i.total }}</td>
+                    <td class="number" style="color: black;">{{ i.balance }}</td>
+
+
+
+
+                </tr>
+                {% endfor %}
+            </tbody>
+
+        </table>
+
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+    
+</body>
+
+</html>
+
+{% endblock %}

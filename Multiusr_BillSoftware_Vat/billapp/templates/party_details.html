@@ -1,0 +1,393 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load social_share %}
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+
+
+<!-- Include jQuery.table2excel plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+<!-- Include jQuery from a CDN -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<!-- Include jsPDF-AutoTable plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.16/jspdf.plugin.autotable.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<!-- Add these links to include the required libraries -->
+<script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://rawgit.com/eKoopmans/html2pdf/master/dist/html2pdf.bundle.js"></script>
+
+
+
+
+
+<style>
+    #thirdTable label,#namee{
+        color: black;
+        font-size: large;
+    }
+    #thirdTable span{
+        color: black;
+        font-size: 17px;
+    }
+    #detailsTable th{
+        color: black;
+        font-size: large;
+    }
+    #detailsTable td{
+        color: black;
+        font-size: large;
+    }
+    #thirdTable a{
+        color: #68020F;
+    }
+    #thirdTable a:hover{
+        background-color: #68020F;
+    }
+   
+</style>
+
+
+
+<div class="body-wrapper">
+    <br><br><br>
+    <div class="row p-0 m-0">
+        <div class="col-12  p-0 m-0">
+            <div class=" bg-light bg-light pb-0 mb-0 p-2" style="height:100%;width:100%;margin">
+               
+                {% for m in messages %}
+                <h5>
+                    <div class="alert alert-danger mt-4" style="width: 100%;">
+                        {{ m }}
+                    </div>
+                </h5>
+                {% endfor %}<br><br>
+                
+            <!-- --------------------name--------------------- -->
+        
+            <div class="col-12" style="background-color: white;padding: 20px;border-radius: 15px;box-shadow: 3px 3px 3px gray;" >
+                <div class="row">
+                    <div class="col">
+                        <h3 id="namee" style="text-transform: uppercase;font-size: 25px;" >{{fparty.party_name}}</h3>
+                    </div> 
+                    <div style="text-align: right;" class="col">
+                        <a style="background-color: #68020F;color: white;" onmouseover="this.style.backgroundColor='#68020F'" onmouseout="this.style.backgroundColor='#3d4465'" class="btn " href="{% url 'party_list' %}">
+                        Back</a>
+                    </div> 
+                </div><br>
+                <div class="row" id="thirdTable">
+                    <div class="col">
+                        <label for="">Phone : </label>
+                        <span id="number"> {{fparty.contact}} </span><br>
+                        <label for="">Email : </label>
+                        <span id="email"> {{fparty.email}}
+                            </span><br>
+                        <label for="">Balance : </label>  
+                        <span id="balance">{{fparty.openingbalance}}</span><br>
+                    </div>
+                    
+                    <div class="col">
+                        {% if fparty.address %}
+                        <label for="">Address : </label> 
+                        <span id="address">{{fparty.address}} </span><br>
+                        {% endif %}
+                        <label for="">TRN No : </label> 
+                        <span id="gstin">{{fparty.trn_no}}</span>
+                    </div>
+                    
+                </div>
+            
+            </div>
+            <!-- ------------------------------------------ -->
+            
+            <br>
+            
+            
+            <!-- -------------------transaction----------------------- -->
+        
+            
+                <div class="col-12" style="background-color: white;padding: 40px;border-radius: 15px;box-shadow: 3px 3px 3px gray;">
+                    <div class="row">
+                        <h3>Transactions</h3>
+                        
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" style="box-shadow: 2px 2px 2px gray;width:300px;" autocomplete="off" id="search_input"   class="form-control col-3 ml-2" placeholder="search"/>
+                            </div>
+                            <div class="col-auto">
+                                <button style="background-color: #68020F;color: white;" onmouseover="this.style.backgroundColor='#68020F'" onmouseout="this.style.backgroundColor='#3d4465'" class="btn " onclick="ExportAsPDF()">pdf </button>
+                                <button style="background-color: #68020F;color: white;" onmouseover="this.style.backgroundColor='#68020F'" onmouseout="this.style.backgroundColor='#3d4465'" class="btn " onclick="printTable()">print </button>
+                                <button style="background-color: #68020F;color: white;" onmouseover="this.style.backgroundColor='#68020F'" onmouseout="this.style.backgroundColor='#3d4465'" class="btn " onclick="exportAsExcel()">excel</button>
+                            </div>
+                        </div>
+                        
+                        
+                    </div><br>
+        
+        
+        
+                    <div class="table table-responsive row" id="pdftable" >
+                        
+                            <table class="table" id="detailsTable">
+                                <thead>
+                                    <th>#</th>
+                                    <th>TYPE </th>
+                                    <th>NUMBER</th>
+                                    <th>DATE</th>
+                                    <th>TOTAL</th>
+                                    <th>BALANCE</th>   
+                                </thead>
+                                <tbody>
+                                    {% for i in ftrans %}
+                                    <tr  class="party-row">
+                                        <td>{{forloop.counter}}</td>
+                                        
+                                        <td>{{i.party.trn_type}}</td>
+                                        <td>{{ i.party.trn_no}}</td>
+                                        <td>{{i.party.current_date}}</td>
+                                        <td>{{i.party.openingbalance}}</td>
+                                        <td>{{i.party.openingbalance}}</td>
+                                        
+                                        
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- ------------------------------------------- -->
+            
+        
+        </div>
+        </div>
+    
+
+        </div>
+            
+
+<script>
+
+// ------ pdf --------------
+
+function ExportAsPDF() {
+    const container = document.getElementById('detailsTable');
+
+    // Add margin to the PDF
+    const margin = 10; // Adjust as needed
+    const pdfOptions = {
+        margin: [margin, margin, margin, margin], // top, right, bottom, left
+        filename: getFilenameFromTable(),
+        image: { type: 'jpeg', quality: 1 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a3', orientation: 'portrait' }, // Adjust format and orientation
+    };
+
+    // Generate PDF from the container
+    html2pdf().from(container).set(pdfOptions).save();
+} 
+
+
+
+
+
+// -----------------------------------------------------------------------------------------------------
+// Excel -----
+
+
+function exportAsExcel() {
+    const table = document.getElementById('detailsTable'); // Replace 'detailsTable' with your table's ID
+    const selectedColumns = [0, 1, 2, 3, 4, 5, 6, 7]; // Array of column indices to include
+
+    // Extract the relevant columns
+    const filteredTable = table.cloneNode(true);
+    const rows = filteredTable.getElementsByTagName('tr');
+
+    for (let i = 0; i < rows.length; i++) {
+        const cells = rows[i].getElementsByTagName('td');
+        for (let j = cells.length - 1; j >= 0; j--) {
+            if (!selectedColumns.includes(j)) {
+                rows[i].deleteCell(j);
+            }
+        }
+    }
+
+    // Convert the modified table to a workbook
+    const wb = XLSX.utils.table_to_book(filteredTable);
+
+    // Dynamically set the filename based on the content of the second column
+    const filename = getFilenameFromTable(); // Assuming the second column is at index 1
+
+    // Save the workbook as an Excel file with the dynamically set filename
+    XLSX.writeFile(wb, filename + '.xlsx');
+}
+
+// function getFilenameFromTable(tableId, columnIndex) {
+//     const table = document.getElementById(tableId);
+    
+//     // Assuming the second column of the first row contains the desired filename
+//     const secondColumnValue = table.rows[1].cells[columnIndex].innerText.trim()+"'s Transaction";
+
+//     // Replace spaces with underscores
+//     const filename = secondColumnValue.replace(/\s+/g, '_');
+
+//     return filename;
+// }
+function getFilenameFromTable() {
+    // Assuming the second column of the first row contains the desired filename
+    const secondColumnValue = document.getElementById('detailsTable').rows[1].cells[1].innerText.trim();
+
+    // Replace spaces with underscores and add the file extension
+    const filename = secondColumnValue.replace(/\s+/g, '_') + '_Transaction.pdf';
+
+    return filename;
+}
+
+
+// ----------------------------------------------------------------------------------------------------------
+// print ------
+
+
+function printTable() {
+    // Clone the table element
+    const tableToPrint = document.getElementById('detailsTable').cloneNode(true);
+
+    // Set background color and text color for printing
+    tableToPrint.style.backgroundColor = 'white';
+    const textElements = tableToPrint.querySelectorAll('th, td');
+    
+    // Set a common width for all columns
+    const columnWidth = 100 / 8 + '%'; // Adjusted for the first 6 columns
+    
+    // Iterate over the columns and set the width for each cell
+    for (let i = 0; i < tableToPrint.rows.length; i++) {
+        const cells = tableToPrint.rows[i].cells;
+        for (let j = 0; j < cells.length; j++) {
+            if (j < 8) { // Only apply styles to the first 6 columns
+                cells[j].style.width = columnWidth;
+                cells[j].style.color = 'black';
+                cells[j].style.backgroundColor = 'white';
+                cells[j].style.border = '1px solid black';
+                cells[j].style.fontSize = '20px';
+                cells[j].style.padding = '7px';
+
+            } else {
+                // If you want to hide the remaining columns, you can set display to 'none'
+                cells[j].style.display = 'none';
+            }
+        }
+    }
+
+    // Add a new row at the top for the heading
+    const headingRow = tableToPrint.insertRow(0);
+    const headingCell = headingRow.insertCell(0);
+    headingCell.colSpan = 8; // span the entire width
+    headingCell.style.textAlign = 'center';
+    headingCell.style.fontSize = '24px';
+    headingCell.style.fontWeight = 'bold';
+    headingCell.textContent = getHeadingFromTable('detailsTable', 1); // Assuming the second column is at index 1
+
+    // Set border-collapse to collapse
+    tableToPrint.style.borderCollapse = 'collapse';
+
+    // Create a new window for printing
+    const printWindow = window.open('', '_blank');
+
+    // Set the background color and styles for centering
+    printWindow.document.body.style.backgroundColor = 'white';
+    printWindow.document.body.style.margin = '0'; // Remove default margin
+    printWindow.document.body.style.justifyContent = 'center';
+
+    // Set the width of the table to 100%
+    tableToPrint.style.width = '100%';
+
+    // Append the modified table to the new window's body
+    printWindow.document.body.appendChild(tableToPrint);
+
+    // Trigger the print dialog for the new window
+    printWindow.print();
+
+    // Close the new window after printing
+    printWindow.close();
+}
+
+function getHeadingFromTable(tableId, columnIndex) {
+    const table = document.getElementById(tableId);
+    
+    // Assuming the second column of the first row contains the desired heading
+    const secondColumnValue = table.rows[1].cells[columnIndex].innerText.trim()+"'s Transaction";
+
+    return secondColumnValue;
+}
+
+
+// ----------------------------------------------------------------------------------
+// transaction filter table
+function filterTransaction(input) {
+                                var filterValue = input.value.toLowerCase();
+                                var tableRows = document.querySelectorAll('#thirdTableTable tbody tr');
+
+                                tableRows.forEach(function(row) {
+                                var cells = row.getElementsByTagName("td");
+                                var isVisible = false;
+
+                                for (var i = 0; i < cells.length; i++) {
+                                    var cellValue = cells[i].textContent || cells[i].innerText;
+                                    if (cellValue.toLowerCase().indexOf(filterValue) > -1) {
+                                    isVisible = true;
+                                    break;
+                                    }
+                                }
+
+                                if (isVisible) {
+                                    row.style.display = "table-row";
+                                } else {
+                                    row.style.display = "none";
+                                }
+                                });
+                            }
+
+// --------------------------------------------------------------------------------------
+
+</script>
+<script>
+    document.getElementById("search_input").addEventListener("input", function() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("search_input");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("billtable");
+        tr = table.getElementsByTagName("tr");
+        var emptyMessage = document.getElementById("emptyMessage");
+        var anyMatch = false;
+        for (i = 1; i < tr.length; i++) {
+            tr[i].style.display = "table-row";
+            var found = false;
+            for (td of tr[i].getElementsByTagName("td")) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().includes(filter)) {
+                    found = true;
+                    anyMatch = true;
+                    break;
+                }
+            }
+            if (!found) {
+                tr[i].style.display = "none";
+            }
+        }
+        emptyMessage.style.display = anyMatch ? "none" : "block";
+        calculatetotal()
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,32 @@
+
+
+<h1>{{company_name}}</h1>
+
+<h1>Sales Report</h1>
+start date:
+
+<input type="date">
+End date:
+<input type="date">
+<table border="2">
+    <thead>
+        <th>Name</th>
+        <th>Date</th>
+        <th>Amount</th>
+    </thead>
+    <tbody>
+        {% for i in report %}
+       
+        <tr>
+            <td>{{i.party.party_name}}</td>
+            <td>{{i.invoice_date}}</td>
+            <td>{{i.grandtotal}}</td>
+        </tr>
+        
+        {% endfor %}
+
+    </tbody>
+</table>
+  
+
+
