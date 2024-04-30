@@ -3677,6 +3677,15 @@ def check_hsn_number_existsdebit(request):
         return JsonResponse({'exists': True})
     return JsonResponse({'exists': False})
 def report(request):
-    rep=Invoice.objects.all()
+  if request.user.is_company:
+      cmp = request.user.company
+  else:
+      cmp = request.user.employee.company
+  # parties = Party.objects.filter(company=cmp)
+  # items = Item.objects.filter(company=cmp)
+  # unit = Unit.objects.filter(company=cmp)
+# Check if there are deleted credit notes in InvoiceReference
+  rep=Invoice.objects.all()
+  context = {'usr':request.user,'cmp':cmp,'rep':rep}
+  return render(request, 'report.html', context)
  
-    return render(request,'report.html',{'report':rep})
