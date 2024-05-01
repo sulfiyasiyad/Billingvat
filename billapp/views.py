@@ -3681,11 +3681,30 @@ def report(request):
       cmp = request.user.company
   else:
       cmp = request.user.employee.company
-  # parties = Party.objects.filter(company=cmp)
-  # items = Item.objects.filter(company=cmp)
-  # unit = Unit.objects.filter(company=cmp)
-# Check if there are deleted credit notes in InvoiceReference
-  rep=Invoice.objects.all()
-  context = {'usr':request.user,'cmp':cmp,'rep':rep}
-  return render(request, 'report.html', context)
+  itm=Invoice.objects.filter(company=cmp)
+  inbill = Invoice.objects.filter(company=cmp).values()
+  inbills = Invoice.objects.filter(company=cmp)
+
+  for i in inbill:
+    p_history = InvoiceHistory.objects.filter(invoice_history=i['id'], company=cmp).last()
+    if p_history:
+        i['action'] = p_history.action
+        i['name']= f"{p_history.user.first_name} {p_history.user.last_name}"
+        i['party'] = p_history.invoice_history.party
+    else:
+        # Handle the case when no history is found
+        i['action'] = ""
+        i['name'] = ""
+        i['party_name'] = ""
+
+
+  return render(request, 'report.html',{'itm':itm,'inbill':inbill,'inbills':inbills,'usr':request.user})
  
+def Search(request):
+  if request.is_ajax() and request.method == 'GET':
+        search_date = request.GET.get('invoice_date')
+        events = Invoice.objects.filter(date=search_date)
+        event_data = [{'title': event.title, 'date': event.date} for event in events]
+        return JsonResponse({'events': event_data})
+  else:
+        return JsonResponse({'error': 'Invalid request'})
