@@ -3679,6 +3679,7 @@ def check_hsn_number_existsdebit(request):
 def report(request):
   if request.user.is_company:
       cmp = request.user.company
+    
   else:
       cmp = request.user.employee.company
   itm=Invoice.objects.filter(company=cmp)
@@ -3698,7 +3699,7 @@ def report(request):
         i['party_name'] = ""
 
 
-  return render(request, 'report.html',{'itm':itm,'inbill':inbill,'inbills':inbills,'usr':request.user})
+  return render(request, 'report.html',{'itm':itm,'inbill':inbill,'inbills':inbills,'usr':request.user,'cmp':cmp})
  
 def Search(request):
   if request.is_ajax() and request.method == 'GET':

@@ -180,6 +180,7 @@
                                         <label for="fromDate" style="color: black; margin-bottom: 1vh;">From Date:</label>
                                         <input type="date" class="form-control h-100 border-danger" id="fromDate" style="color: black; background-color: white;" onchange="filterDates(this.value)">
                                         
+                                        
                                     </div>
                                 </div>
                                 <div class="col-md-3">
@@ -188,6 +189,8 @@
                                         <input type="date" class="form-control h-100 border-danger" id="toDate" style="color: black; background-color: white;" onchange="filterDates()">
                                     </div>
                                 </div>
+                                <!-- <p id="selectedDates" style="color: black;"></p> -->
+                               
                                 <div class="col-md-2"></div>
                                 <div class="col-md-3 text-right" style="margin-right: 2vh; margin-left: 2vh;">
                                     <button class="btn mt-3" type="button" onclick="ExportToExcel()" style="margin-right: 2vh; margin-left: 2vh;">
@@ -199,14 +202,25 @@
                                         <span><img width="30px" src="data:image/png;base64,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" alt="no img"></span>
                                         <br><span style="color: black; font-size: small; font-weight: bold;">Print</span>
                                     </button>
-                                    <button class="btn mt-3" type="button" onclick="export_as_pdf()" style="margin-right: 2vh;">
+                                    <!-- <button class="btn mt-3" type="button" onclick="export_as_pdf()" style="margin-right: 2vh;">
                                         <span><img width="30px" src="https://play-lh.googleusercontent.com/kIwlXqs28otssKK_9AKwdkB6gouex_U2WmtLshTACnwIJuvOqVvJEzewpzuYBXwXQQ=w600-h300-pc0xffffff-pd" alt="no img"></span>
                                         <br><span style="color: black; font-size: small; font-weight: bold;">PDF</span>
-                                    </button>
-                                    <button class="btn mt-3" type="button" onclick="export_as_pdf()" style="margin-right: 2vh;">
-                                        <span><img width="20px" src="https://cdn0.iconfinder.com/data/icons/multimedia-261/32/Send-512.png" alt="no img"></span>
+                                    </button> -->
+                                     <button class="btn mt-3" type="button" id="download-pdf" style="margin-right: 2vh;">
+                                        <span><img width="30px" src="https://play-lh.googleusercontent.com/kIwlXqs28otssKK_9AKwdkB6gouex_U2WmtLshTACnwIJuvOqVvJEzewpzuYBXwXQQ=w600-h300-pc0xffffff-pd" alt="no img"></span>
+                                        <br><span style="color: black; font-size: small; font-weight: bold;">PDF</span>
+                                    </button>  
+                                    <!-- <button class="btn mt-3" type="button" onclick="export_as_pdf()" style="margin-right: 2vh;">
+                                        <span><img width="30px" src="https://cdn3.iconfinder.com/data/icons/user-interface-48/52/share-512.png" alt="no img"></span>
                                         <br><span style="color: black; font-size: small; font-weight: bold;">Share</span>
-                                    </button>
+                                    </button>  -->
+
+                                   
+                                    
+                                   
+                                    
+
+                                    
                                     
                                     
                                     
@@ -222,6 +236,10 @@
                     <br>
                 </div>
             </div>
+         
+            <h1 style="text-align: center;">Sales Reports</h1> 
+            <h1 style="text-align: center;">{{cmp.company_name}}</h1>
+           
 
             <div class="row pt-0 m-0">
                     <div class="row">
@@ -367,7 +385,15 @@
         function updateMinDate() {
             var selectedDate = document.getElementById('fromDate').value;
             document.getElementById('toDate').min = selectedDate;
+            var selectedDate2=document.getElementById('toDate').value;
+
+           
+            
+            document.getElementById("selectedDates").textContent = "Selected From Date: " + selectedDate + ", Selected To Date: " + selectedDate2;
+
         }
+   
+    
     </script>
    
 <script>
@@ -412,7 +438,7 @@
         $printerDiv.html(printContents); 
         $('body').append($printerDiv).addClass("printingContent"); 
         var h1Element = document.createElement("h1");
-        h1Element.textContent = "Invoice Bills";
+        h1Element.textContent = "Sales Report";
         var head = document.getElementById("printContainer");
         head.insertBefore(h1Element, head.firstChild);
         window.print();
@@ -600,37 +626,40 @@
         const ws = XLSX.utils.table_to_sheet(table);
         const wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-        XLSX.writeFile(wb, 'InvoiceBill.xlsx');
+        XLSX.writeFile(wb, 'report.xlsx');
     }
     
 </script>
 <script>
-    function export_as_pdf() {
-            document.getElementById('pdfexclude').style.display = 'none'
-            document.getElementById('adjustbtn').style.display = 'none'
-            const content = document.getElementById('item_get_detail_target');
-            const table = document.querySelector('#itemtable');
-            table.querySelectorAll('tr').forEach(row => {
-                const lastCell = row.lastElementChild;
-                if (lastCell) {
-                    lastCell.style.display='none';
-                }
-            });
-            html2pdf().from(content).save('InvoiceBill.pdf');
-            setTimeout(function() {
-                document.getElementById('pdfexclude').style.display = 'block'
-                document.getElementById('adjustbtn').style.display = 'block'
-                table.querySelectorAll('tr').forEach(row => {
-                const lastCell = row.lastElementChild;
-                if (lastCell) {
-                    lastCell.style.display = 'block';
-                }
-            });
-            }, .01);
+     
+        // Function to convert the HTML page to PDF and download
+        function downloadPDF() {
+            // Select the HTML element to be converted to PDF
+            var element = document.body;
+
+            // Options for PDF generation
+            var options = {
+                filename: 'report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            // Call the html2pdf library to generate PDF
+            html2pdf()
+                .from(element)
+                .set(options)
+                .save();
         }
+
+        // Add click event listener to the download button
+        document.getElementById('download-pdf').addEventListener('click', downloadPDF);
+    </script>
+    
 
 
 </script>
+
 
 
 {% endblock content %}
