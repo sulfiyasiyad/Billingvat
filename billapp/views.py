@@ -3685,6 +3685,8 @@ def report(request):
   itm=Invoice.objects.filter(company=cmp)
   inbill = Invoice.objects.filter(company=cmp).values()
   inbills = Invoice.objects.filter(company=cmp)
+  credit=CreditNote.objects.all()
+  
 
   for i in inbill:
     p_history = InvoiceHistory.objects.filter(invoice_history=i['id'], company=cmp).last()
@@ -3699,13 +3701,48 @@ def report(request):
         i['party_name'] = ""
 
 
-  return render(request, 'report.html',{'itm':itm,'inbill':inbill,'inbills':inbills,'usr':request.user,'cmp':cmp})
+  return render(request, 'report.html',{'itm':itm,'inbill':inbill,'inbills':inbills,'usr':request.user,'cmp':cmp,'credit':credit})
  
-def Search(request):
-  if request.is_ajax() and request.method == 'GET':
-        search_date = request.GET.get('invoice_date')
-        events = Invoice.objects.filter(date=search_date)
-        event_data = [{'title': event.title, 'date': event.date} for event in events]
-        return JsonResponse({'events': event_data})
+def sendmail_report(request):
+  if request.user.is_company:
+        party = Invoice.objects.filter(company=request.user.company)
   else:
-        return JsonResponse({'error': 'Invalid request'})
+        party =Invoice.objects.filter(company=request.user.employee.company)
+  if request.method == "POST":
+        try:
+         
+            fparty = Party.objects.get(id=id)
+            
+            cmp = fparty.company
+            context = {'party': party, 'usr': request.user, 'fparty': fparty,'cmp':cmp}
+            
+            email_message = request.POST.get('email_message')
+            my_subject = "REPORT"
+            emails_string = request.POST.get('email_ids')
+            emails_list = [email.strip() for email in emails_string.split(',')]
+            
+            html_message = render_to_string('report.html', context)
+            plain_message = strip_tags(html_message)
+            
+            pdf_content = BytesIO()
+            pisa.CreatePDF(html_message.encode("UTF-8"), pdf_content)
+            pdf_content.seek(0)
+
+            filename = f'report'
+            email=EmailMultiAlternatives(my_subject,f"Hi,\nPlease find the attached Transaction Report - \n{email_message}\n--\nRegards,\n{cmp.company_name},\n{cmp.address},{cmp.city},{cmp.country},\n{cmp.contact}\n",from_email='altostechnologies6@gmail.com',
+                                         to=emails_list, )
+       
+            email.attach(filename, pdf_content.read(), 'application/pdf')
+            email.send()
+
+            return HttpResponse('<script>alert("Report has been shared successfully!");window.location="/party_list"</script>')
+        except Party.DoesNotExist:
+            return HttpResponse('<script>alert("Party not found!");window.location="/party_list"</script>')
+        except Exception as e:
+            # Handle the exception, log the error, or provide an error message
+            return HttpResponse(f'<script>alert("Failed to send email: {str(e)}");window.location="/party_list"</script>')
+  return HttpResponse('<script>alert("Invalid Request!");window.location="/party_list"</script>')
+    
+ 
+   
+   
