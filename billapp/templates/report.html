@@ -8,7 +8,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
 <style>
  
-    .bs{
+     .bs{
         box-shadow: 2px 2px 10px 3px rgba(0, 0, 0, 0.397);
     }
 
@@ -61,43 +61,21 @@
         font-size: x-large;
         font-weight: bold;
         color: red;
-    }
+    } 
 
-    .dropdown {
-        position: relative;
-        display: inline-block;
-    }
+   
 
-    .dropdown-content {
-        display: none;
-        position: absolute;
-        background-color: #fff;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-        border-radius: 5px;
-        padding: 10px;
-        z-index: 1;
-        width: 15%;
-    }
+    
 
-    .dropdown-content label {
-        display: block;
-        margin-bottom: 5px;
-    }
+   
 
-    .dropdown-content input {
-        width: 100%;
-        padding: 5px;
-        box-sizing: border-box;
-        margin-bottom: 10px;
-    }
-
-    .tplus{
+     .tplus{
         margin-top: 3vh;
         margin-left: 5vh;
         margin-right: -2vh;
-    }
+    } 
 
-    .tequal{
+     .tequal{
         margin-top: 3vh;
         margin-left: 5vh;
         margin-right: -2vh;
@@ -121,11 +99,11 @@
 
     @media print{
         body{
-            visibility: hidden !important; /* hide everything in body when in print mode*/
+            visibility: hidden !important; 
         }
 
         .printContainer {
-            visibility: visible !important; /* Override the rule above to only show the printables*/
+            visibility: visible !important; 
             position: absolute;
             z-index: 99999;
             top: 0;
@@ -158,7 +136,74 @@
     
     ::-webkit-scrollbar{
         display: none
-    }
+    } 
+    
+    
+
+
+
+
+
+
+    .dropbtn {
+   
+     color: white; 
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+  .dropdown {
+    position: relative;
+     display: inline-block; 
+  }
+  /* Style for the dropdown button */
+  /* .dropbtn {
+    
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    min-width: 20px;
+    min-height:20px
+  } */
+  
+  /* Style for the dropdown content */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+     background-color: #f9f9f9; 
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  /* Style for the dropdown links */
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Style for the dropdown links on hover */
+  .dropdown-content a:hover {
+    background-color: #f1f1f1;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
 </style>
 
 {% if itm %}
@@ -175,7 +220,7 @@
                     <div class="row">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-3" style="margin-left: 7vh;">
+                                <div class="col-md-2" style="margin-left: 7vh;">
                                     <div class="form-group">
                                         <label for="fromDate" style="color: black; margin-bottom: 1vh;">From Date:</label>
                                         <input type="date" class="form-control h-100 border-danger" id="fromDate" style="color: black; background-color: white;" onchange="filterDates(this.value)">
@@ -183,37 +228,47 @@
                                         
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="toDate" style="color: black; margin-bottom: 1vh;">To Date:</label>
                                         <input type="date" class="form-control h-100 border-danger" id="toDate" style="color: black; background-color: white;" onchange="filterDates()">
                                     </div>
                                 </div>
-                                <!-- <p id="selectedDates" style="color: black;"></p> -->
-                               
                                 <div class="col-md-2"></div>
-                                <div class="col-md-3 text-right" style="margin-right: 2vh; margin-left: 2vh;">
+                                
+                                <div class="col-md-4 text-left" style="margin-right: 2vh; margin-left: 4vh;">
                                     <button class="btn mt-3" type="button" onclick="ExportToExcel()" style="margin-right: 2vh; margin-left: 2vh;">
-                                        <span><img width="30px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8MIAwEUzmg555EHpPgTVAMxo8vzR4bc2E4A&usqp=CAU" alt="no img"></span>
+                                        <span><img width="25px" src="data:image/png;base64,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" alt="no img"></span>
                                         <br><span style="color: black; font-size: small; font-weight: bold;">Excel</span>
                                     </button>
 
                                     <button class="btn mt-3" type="button" onclick="printfunction()" style="margin-right: 2vh;">
-                                        <span><img width="30px" src="data:image/png;base64,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" alt="no img"></span>
+                                        <span><img width="30px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG-I1yOM9rgXYTTWRlIxobAir6NI0wFpRrMQ&s" alt="no img"></span>
                                         <br><span style="color: black; font-size: small; font-weight: bold;">Print</span>
                                     </button>
-                                    <!-- <button class="btn mt-3" type="button" onclick="export_as_pdf()" style="margin-right: 2vh;">
-                                        <span><img width="30px" src="https://play-lh.googleusercontent.com/kIwlXqs28otssKK_9AKwdkB6gouex_U2WmtLshTACnwIJuvOqVvJEzewpzuYBXwXQQ=w600-h300-pc0xffffff-pd" alt="no img"></span>
-                                        <br><span style="color: black; font-size: small; font-weight: bold;">PDF</span>
-                                    </button> -->
+                                    
                                      <button class="btn mt-3" type="button" id="download-pdf" style="margin-right: 2vh;">
                                         <span><img width="30px" src="https://play-lh.googleusercontent.com/kIwlXqs28otssKK_9AKwdkB6gouex_U2WmtLshTACnwIJuvOqVvJEzewpzuYBXwXQQ=w600-h300-pc0xffffff-pd" alt="no img"></span>
                                         <br><span style="color: black; font-size: small; font-weight: bold;">PDF</span>
-                                    </button>  
-                                    <!-- <button class="btn mt-3" type="button" onclick="export_as_pdf()" style="margin-right: 2vh;">
-                                        <span><img width="30px" src="https://cdn3.iconfinder.com/data/icons/user-interface-48/52/share-512.png" alt="no img"></span>
-                                        <br><span style="color: black; font-size: small; font-weight: bold;">Share</span>
-                                    </button>  -->
+                                    </button>
+                                    <div class="dropdown">
+                                        <button class="dropbtn" onclick="toggleDropdown()" type="button">
+                                            <span><img width="20px"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAOEAAADhCAMAAAAJbSJIAAAAkFBMVEX///8AAAD7+/v8/Pz+/v4BAQH9/f36+vrY2Nj09PTv7+/39/eGhobf39/o6Ojs7Oynp6d0dHS6urrJyckqKiolJSU+Pj5jY2Ourq7Pz8+MjIyfn59BQUGxsbFISEiTk5NSUlI0NDQZGRkSEhJ7e3tqamofHx9cXFwMDAyYmJhHR0fCwsJfX19PT08xMTFoaGjGxtZVAAARD0lEQVR4nM1deWPqIAyn2mm96jWdx5xzc9dzx/f/dq93CyQQaKn2jyevSyE/kpAEKGVdllzdTi8tdDp+8ut3OumNXkck6WYkFFqJxM9JTGhZdxAcZl/j3XG/WQ66hmzqAPYVABlG228CYE7S246fvMq1mi+mjNx0fpsuFYoEpVZkgPrOyKobHk85tLu7AuXbksimT2aaIEFUKia0AsngXMquAJgUHrdlvaqmNa3gsleoKG5XfUmC6qb9WQIox3XHI/2YMF11KZsNDTJWNqhW0fCpxCdIML02SNO8olFssHjSgJaiomqAC0hwfGFOYNNm6LeyK+NR9EsP0PPWI6ZjszUbNPGDcXU7HiCG9Dd3HKgcbtUGjwrBVQp33uNIw2YTAGWp9Ouq84GioinJM8ZmBR8lkpFVtO/QTQQ0FU0LYyWbVIBNq6h6kOmclG5CLCyZIh7BW+GYrhmq0TsjrW5HVtHkWo18lE1imG7jJoBYlBqqhWYAPW+nZLO9UI0AMKX9pttg9hsaAbyym0iGGboNprRjBZu3FqpF19kzUNGs0MfZvLFQLbqmlWxCK8Ec6YyhbAqtXC+jL+z1gKZLClGeGBFgIzaoGkW1KsrYA1lw1URqitVrD9CROvsjE4BFdOotsKaZUkXbzeiTgh+Yq2ieKSIR5c2EammBbTS4kIH2HyoHlYq27SaiQi9Jm4xsMC2sBli9N+QmEoDsgypBAWnYQ9i8fkZf2mDS9NrUBrNC4GNsIoy0HaoVTa/IoRp3wwuIAK1CNUJGT7DBjOQFD0oV8XiOEPCvHNyGMnp56t5gSvbewwCqRpsMYclmUS/PCDyjymqrKCW1ykhiO9QChP4ygdnsMFBF62X0kgTJNhh3+RtdcFwhRNm8+uILq0gw6vIvYxtMCr99rGlnoZqxm8j69mBsg0nhB2XzBtxEj2s6VAJEB9oxw9i8ekZfkWDSdPfTXEWj68LQprPeu1qoJinPmeQQRZJhD6sX7ukWQzXJOpYeAaCI9INhbMLd2HqoVml6dMYAqhZLFyib3P/aXXxJORKbDlbmNhhdPto0xIhdqGaT0Ut929tRVFSW7V7VNEWCzjJ6oenJWgFQobwvAwWbTe2ToXcGPpkw80SAhEwxts6Zis2GFl/qhWoJyfRHBVCFdK1s+jZCNZbuvCDYIIQ0VLLJtXK1UI0N31TOQJ30z5Rs5revHKotX2UY1BW2s7ppMtMuQ7X+2SabyAoPmqaLVmCArjP6pOntvVozlUgfmH6oaCijtwrVYhXdgYLzvJNCcAXiOUEO19j2VZFg4uQhgGM/fNWq6J7AJkVFG158Kd0EY3uYe+9lGxPMPcViqefdB5SmrxmqsfADATgfpDSXNQYwuo4dEptth2qlBLvscIdwvyj6gB3eM4GJAM9TIpsY0xQbrCVBNnhAxPMx5KpbPheoCpLV14DaNAbQdUbfY5dPBOAsY6qcZxku5kXSEVnfxz5boyCxqeHIVajGRnPEwB7zzduVoCD+N5wsN7P95hKEI5ZfJDbVHDW9+FIA3N4jAI9dJlRXRJTFZeyu5YzeaBrCJlTbeTDA3wnrIdXVYNO1Dcqh2gRbfBl3penbWgO4dmeio8WXvTQypoXXZexB+OpsIkpRDo5DNckGhz8IwL+Odte9HZvoKNpwqJaRlJk8D/A1cvKO1oiwJ524iTiTBwF+D9XrtDW8GcJR06FaCjBz8jLAGdR0QxMPyJMuMvrOGZlw+Re6zNSYoXLbu4ntCpne/VI2Xdeb9Wxt0NhNHJEc7xSA/dXg5J+rUI1ffJmsEYDjHlidkR/UsGnlJgyyiYSRvQfNR3je+1bdNBCqmXuzFjL68BmI0OJrPoKbbnjyT2C6aTfhpxtGIYAXpL8anvxDWmkqVGOjBwRglsk307QWoKvFly67ZLgkG9zomm5q8o//X8OhWr4mL0vwaYIx3fg6rZLpmhl9nsnLAL96WHUu1ohchWrMHwMBTHzdF+/ROwvVqrSuQjUWFJO5gg2O+znAdnZeO1p8KTJ5UYKRk0erc7NO60ZPpk8IwLe+vP8MGGTITVNodUzbZPQHr8DFqejrJZv9dB6qSQAbDdWGfx4swe8BEAa73nkNP1krVLu8IgA3lTi/XjZhMlRwcAlP+vkEdA9hpIOt+f2bQgBduomiOpOZ7eFku5jNNosgHIqMpCTbdw9+QfKLpBA1QzW4M8jKPViOfwoF9FYfx/g9HL6n/R0yFbMOlFJxup2HlCpHJNtziS7nfnUMWbXyaibP7akYM6Vdud3OQ5uu2q6rXFdyvL9JWfkeIol+V1uYkQYXX1S0FICTZ8C35YXzIDWE8IcDWG6qOPeZQxvUezO0lfzJHvaORxGHXeLAaAP2ged9XnimG3ETJpN/2m5kw2c1QC/etpOsyUMAv4cI065DtaIzkK4pxl8W3AlqB80JPr3yJAXCg8CI84we3temkD3borggpIIEn0OM6XZ3XqtUdIJtmAC200kquherc+UmNJ2h6Jre9F2roijAk/TaaouhGhFgJ3vb0erF43EeyF7PTWS0KoA7axtcLZlWKm3tvMb1hAXWNjgf4KfCWNlgnTUioWuqa36Plir6eWG4irrO6HUAq7LXvMyJqujfUN7g0VpGLyuEopV7OxU9RNWgaudo8UU18QADjJ9c0CQoAHyaFtw37CasXAq/CCykyk82NvilHBnbC9Wq1WHKHVrZYEgZ+lt+QQeT/QyZj1DaYBSoEWyw5Rd0sK75ANJ1faj27KOMtBuqVUngJwcr/aFpULrUF1q5VqhWqQ55MvAIuACSAO7G1kM1SYLS7YAAEEJ6sAYoS6XOu9QlSXJbHn/LM8UMke5vI1TjT28BF791UTc20I5vI1QraXtYK4GNinrxpFSzs2pAqGa6pQ7pmoCqosJf3vAF0PbdBL/KLdwOLCdn3piup2uGagZuosetcot6EljYYGqHCCNXPHIDfjKwe/E42Q7rcFatAYD5bVuPv4Grc7z4YgHQt/X4/Fud1wvVKm8BMlD23eE7hgu3zrgwMnQTrm1Q2NdW7ZofCxWNcgvNIJMz7TCjl5tG9GRmoaKed7yNUI1THqxrJmZuIisE7FZCtbJpVLlPwJ4KnTE+ydVdwU0ITaM6Vdm5RQUYRaU+Vl3LoRqrKA/yZLd/hwJEkXofA7ina7oJi5fkRICQ7GeGNpiQvAdgN17DTWgBsv7KyAZzkk00/rW9+AIMMkV1HG7hyYuFx4+uv3wPcD03UcsG+abxJ+eeiYrmfeCdJllzbbkJ3AYTWsXC2+jFVEWzGwupFbjLm915jcw5q2Qfu31jgEnhzHxcgq2EaiWtWvZLgHsS0n/5nr56Gb3RrBoygGu65mJkgxW7fV3qOHIaqlVodU/ip4lWHH1xoyrko7Lehl+Sw6NEbdew8FcL8AfW4ijAuV6oVtAirVTH3/g0NWWotmeTew+y1/QV0TYyekWuTeqay6miiGIh+Rro4A+y1+w0nSuEajytqpW88hkGcJ2+CMqyTagSybwFN4EPMghAYPyNbiy4jw6nMD4fMjWM7XX7AvbB/aSYkm0lo5f7i9414ezhvgJyPV8MoySrZGSIvNCMH2Ls2E1ktPiT0vgbhXHT7exrt9t9bYJp0j08I+C7CNk8eMuhWoXWpGsYf8mtXGBj/Dek2WCzboLjlxymg7SlIbDwER6Qluj5T83boBqg1YJKldY/w8Z4FDhqx00whp3eItsg3RAOsjHGvx99iOmaGT2FTXLXoIxIdjV5lwDGhbug4l+dhWoQm3CoJj5JzhCiUHT0Bxtjflyg24xeorUZf7WGsIeiVM976+kAmq7RU9g096AUPSmWH/mQ/TdkNBtswNEXtCZhujZDKH3m8FlQ0QzpoqgXso5G3QS/7cuoaygBoS9s9C9UVXpLwU2ohgO0mcxFWrlAAJNdxHxn2GT0BkOFedfQU6Cw8i2HKtKlw4xepk3+Z2WDeuednNAmA4z3Svfq2KDZUGHdNRRD6GFvNHwUb4I7CtU4WuAgcRMb1NAG73IQF10v2D5Uq8UXNZs+GEBnTzLhSYs1+l7+eV9BlDPQ0dtN/KrZBAYZujMizHX6+Tkuoq7OR/KOs+ZCtUp1NqGa0XZKn20/QWP8lc6KatZNFNWRu8Z+pmzwBE9vLNT1NjDIlAAbCdUUtGPYGM+9ZhZfVLQZ7nqhGmF64wIb4+MU3QxSc+KBO73FiZtggl2FJ08Kw738QAKaDdpFlMy1DZa0c9kY498jWG9DNpiQNByqKex1Axvj86BxN8GxWTfhJXeG32GTFWiMqy3hKxsmbPIys3+SRsvtk+l/g8aYn01AmVUzYVPY11bHTdD3yew9YENgtgeHOvRzTRPYJANsZDtl8nWu3ONXVPU0UUglvj+dbBeb2eEyCX1aZwgArWfVYFrFgJQdrC+vKR+Y2F9Flj5dzB/Lw87XD5sJSivJwScz3ciiZppN7CCA6ffToOou3+IQHIl806GyqQHo5s2XC2yM61Cuzt9UvrXO9coROsAPloN7NyHOybDJI+QYk88W800vyy/oSMnJ68zHmuaHCpehWtkKT8v8Och0vkSVVZd8swvfA+I9hhQ2r/HZtbhwgI3xeVCSxMf/aDaaLQhsGuQs9WxQnHQKfsF3qV+3eXUXaPFDRHrUHzHrKGfRAmT5N7skpmfp52YOyn1YReHMdGzaAGQ6WpI6ox/O+4tpF8p9WMVf8vcBcTa1UmkiVEPX6Lcv4AiymsRnjFF3fX6p2aQCdLSleYB8OWi2gmZ2kMJSGVHCAOtlE3Ir6My2n3++C5CXXkXzwqCLs9lVM+3CTfC02R4cnHsCwORrqwo22wrVUNrpGpreMECaf0cC6dv23YREmy9R8ZOpGlwc7dpXsNleqIZ2Rnbolp0NpoULxybftIUNOnhJOZnBMQAo0j4Co2jOpgDQygYb2E45evPAIE4LMLsR+BKbeezEM23iJkwAEqY3sE8NkAba/KQDgE0EYB03YeVSooxqe2dng3HB+0SbhqXSTDZhukY/eLYebdKDAJCIsuYST6NbmvPvk5rZYFI4oHJoaBWy1oBUZlQLAi5YtnO03muEariHSgIcq9HmCWXTUahmApBffDG2wbRwKjYOSAM4wsjVXlImh2r8jZcpJgeEkSu8pJyRKIJS1cHTn+LJ2pzHv4mzLHKSnGWz0SY+lBJmk/9f+2dZSAug7JUAEPjLyxDpOJCRKx07lhTYE11w1cLJR9lsPFSzchNF32YbU0xsMCn8oPU6C9Vs33xBPgipE+UYUh5uX9v1QjVhK8FECRAdaCuLOgKbjkI1Ez/Ie6jep7mKRte0h9YL93SboZqgPGeSQxT+ssZPM4R7uu1QrQJQ8X68QpT5+zjI5obrh2qVprujX6rgKiHNEGUTA5gz7SqjRyUYkexNbTDJnbCm1UxbhWoGKgoHUf1XMxuMromKzds5dqygnVFDtayQLSIibDa9+NLIluZ7+Ot0GMDUCjE2byJUEwDmXyiizUtlm43Qpq8yq5YWcOVhR9QGAaQPajbRVlp3ExzttygnXFdPIyWb+e3WQzVNlNhfkadOQ3XTCNNWiy+EbILuVge/xNFmomFT2Yr7jF5xUEAofxMaQjoh9K2Nm7BafDGbc2ajb1xw+e8pJDR97RNiFbQ7AQ9fiK45PAvDs2nzplrzoRpCG5w8EVcF4MuFxObNhGrgZG5//4oCPA5obDbiJkxs0GjO2WeD2UuplRWAuyGVTYzptjJ6Au1yXvlQb3I9LOhNYwBdhWomuXYlSw8O549/v6vV7+PzfLMt7lNcsK6V9s+TwWkHw8Eou2PApoZpior2dLT1AJYkXXM2I5L/r5RFGHrhjlIAAAAASUVORK5CYII=" alt="no img"></span>
+                                        </button>
+                                        <div class="dropdown-content" id="myDropdown">
+                                          <a data-target="#shareBillEmail"  data-toggle="modal">Email</a>
+                                          <a 
+                                          onclick="shareOnWhatsApp()">WhatsApp</a>
+                                        </div>
+                                    </div>
+                                   
+                                   
+                                     
+                                   
+                                   
+                                   
+                                    
+                                   
 
                                    
                                     
@@ -237,8 +292,10 @@
                 </div>
             </div>
          
-            <h1 style="text-align: center;">Sales Reports</h1> 
+           
             <h1 style="text-align: center;">{{cmp.company_name}}</h1>
+            <h2 style="text-align: center;">Sales Reports</h2> 
+            <p id="selectedDates" style="color: black; text-align: center;"></p> 
            
 
             <div class="row pt-0 m-0">
@@ -250,43 +307,19 @@
                                         <tr class="fs-2 tb">
                                             <th style="background-color: #68020F;" class=" border-danger text-white">
                                                 DATE 
-                                                <a class="extra text-black" onclick="toggleDropdown(0)">&nbsp;<i class="fa fa-filter" aria-hidden="true"></i></a>
-                                                <div class="dropdown-content" id="dropdownContent0">
-                                                    <label for="filterInput0" style="color: black; text-align: left;">Equal To</label>
-                                                    <input type="date" id="filterInput0"  />
-                                                    <a class="btn btn-danger" onclick="cleardropdown(0)">Clear</a> 
-                                                    &nbsp;<a class="btn btn-danger" onclick="filterTable(0)">Apply</a>
-                                                </div>
+                                               
                                             </th>
                                             <th style="background-color:#68020F;" class=" border-danger text-white">
                                                 INVOICE NO 
-                                                <a class="extra text-black" onclick="toggleDropdown(1)">&nbsp;<i class="fa fa-filter" aria-hidden="true"></i></a>
-                                                <div class="dropdown-content" id="dropdownContent1">
-                                                    <label for="filterInput1" style="color: black; text-align: left;">Equal To</label>
-                                                    <input type="text" id="filterInput1"  />
-                                                    <a class="btn btn-danger" onclick="cleardropdown(1)">Clear</a> 
-                                                    &nbsp;<a class="btn btn-danger" onclick="filterTable(1)">Apply</a>
-                                                </div>
+                                               
                                             </th>
                                             <th style="background-color: #68020F;" class=" border-danger text-white">
                                                 PARTY NAME 
-                                                <a class="extra text-black" onclick="toggleDropdown(2)">&nbsp;<i class="fa fa-filter" aria-hidden="true"></i></a>
-                                                <div class="dropdown-content" id="dropdownContent2">
-                                                    <label for="filterInput2" style="color: black; text-align: left;">Equal To</label>
-                                                    <input type="text" id="filterInput2"  />
-                                                    <a class="btn btn-danger" onclick="cleardropdown(2)">Clear</a> 
-                                                    &nbsp;<a class="btn btn-danger" onclick="filterTable(2)">Apply</a>
-                                                </div>
+                                                
                                             </th>
                                             <th style="background-color: #68020F;" class=" border-danger text-white">
                                                 AMOUNT
-                                                <a class="extra text-black" onclick="toggleDropdown(3)">&nbsp;<i class="fa fa-filter" aria-hidden="true"></i></a>
-                                                <div class="dropdown-content" id="dropdownContent3">
-                                                    <label for="filterInput3" style="color: black; text-align: left;">Equal To</label>
-                                                    <input type="text" id="filterInput3"  />
-                                                    <a class="btn btn-danger" onclick="cleardropdown(3)">Clear</a> 
-                                                    &nbsp;<a class="btn btn-danger" onclick="filterTable(3)">Apply</a>
-                                                </div>
+
                                             </th>
                                             
                                             <!-- <th style="background-color: #FFD6D7;" class=" border-danger text-black">
@@ -382,6 +415,7 @@
  
     <script>
         document.getElementById('fromDate').addEventListener('change', updateMinDate);
+        document.getElementById('toDate').addEventListener('change', updateMinDate);
         function updateMinDate() {
             var selectedDate = document.getElementById('fromDate').value;
             document.getElementById('toDate').min = selectedDate;
@@ -389,7 +423,7 @@
 
            
             
-            document.getElementById("selectedDates").textContent = "Selected From Date: " + selectedDate + ", Selected To Date: " + selectedDate2;
+            document.getElementById("selectedDates").textContent = " From Date: " + selectedDate +    "     To Date: " + selectedDate2;
 
         }
    
@@ -659,6 +693,71 @@
 
 
 </script>
+<div class="modal fade" id="shareBillEmail">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="background: #68020F; border-radius: 20px;">
+            <div class="modal-header" style="background: #68020F;">
+                <h5 class="m-3 text-uppercase text-light" id="shareBillEmailLabel">Share Via Email</h5>
+                <button type="button" class="btn btn-close btn-outline-light" data-dismiss="modal" aria-label="Close" ></button>
+            </div>
+            <div class="modal-body" style="background: #68020F;">
+                <div class="card p-3 m-3" >
+                    <form action="" method="post" class="needs-validation"
+                        id="share_to_email_form" autocomplete="off" >
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="emailIds">Email ID</label>
+                            <textarea  class="form-control text-dark" name="email_ids" id="emailIds" rows="3"
+                                
+                             required></textarea>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="item_unitname">Message</label>
+                            <textarea name="email_message" id="email_message" class="text-dark form-control" cols=""
+                                rows="3" ></textarea> 
+                        </div>
+                        <div class="modal-footer d-flex justify-content-center" style="border-top: 1px solid #ffff;">
+                            <button style="background: #68020F; color: white;" type="submit" id="share_with_email"
+                                class=" btn btn-outline-dark  submitShareEmailBtn " value="SEND MAIL">SEND </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleDropdown() {
+          var dropdown = document.getElementById("myDropdown");
+          if (dropdown.style.display === "block") {
+            dropdown.style.display = "none";
+          } else {
+            dropdown.style.display = "block";
+          }
+        }
+        
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(event) {
+          if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+              var openDropdown = dropdowns[i];
+              if (openDropdown.style.display === "block") {
+                openDropdown.style.display = "none";
+              }
+            }
+          }
+        }
+     </script>
+     <script>
+        function shareOnWhatsApp() {
+        var url = window.location.href;
+        var text = url;
+        text = encodeURIComponent(text);
+        var whatsappUrl = "whatsapp://send?text=" + text;
+        window.location.href = whatsappUrl;
+    }
+     </script>
+
 
 
 
