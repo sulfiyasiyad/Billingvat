@@ -308,6 +308,7 @@ class Invoice(models.Model):
     grandtotal = models.DecimalField(max_digits=10, decimal_places=2, default=0)
     invoice_date = models.DateTimeField(auto_now_add=True,null=True)
     invoice_no = models.CharField(max_length=255,null=True)
+
  
 class InvoiceItem(models.Model):
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE,null=True,blank=True)

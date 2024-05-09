@@ -297,7 +297,6 @@
             <h1 style="text-align: center;">{{cmp.company_name}}</h1>
             <h2 style="text-align: center;">Sales Reports</h2> 
             <p id="selectedDates" style="color: black; text-align: center;"></p> 
-
            
 
             <div class="row pt-0 m-0">
@@ -305,12 +304,10 @@
                         <div class="col-md-12" style="margin-left: 2vh;">
                             <div class="mt-3" style="overflow: scroll;height: 28rem; width: 97%;" id="tablediv">
                                 <table class="table table-bordered table-dangerbtn-danger table-striped tb table-responsive w-100" id="billtable"  style="text-align: center;">
-                                    <p>{{result}}</p>
                                     <thead >
                                         <tr class="fs-2 tb">
                                             <th style="background-color: #68020F;" class=" border-danger text-white">
                                                 DATE 
-                                                
                                                
                                             </th>
                                             <th style="background-color:#68020F;" class=" border-danger text-white">
@@ -323,10 +320,6 @@
                                             </th>
                                             <th style="background-color: #68020F;" class=" border-danger text-white">
                                                 AMOUNT
-
-                                            </th>
-                                            <th style="background-color: #68020F;" class=" border-danger text-white">
-                                                ACTION
 
                                             </th>
                                             
@@ -355,7 +348,6 @@
                                             <td class="clickable-row" style="color: black;" data-href="details_invoicebill/{{ p.id }}">{{ p.party.party_name }}</td>
 
                                             <td class="clickable-row" style="color: black;" data-href="details_invoicebill/{{ p.id }}">{{p.grandtotal}}</td>
-                                            <td class="clickable-row" style="color: black;" data-href="details_invoicebill/{{ p.id }}">Invoice</td>
 
                                             <!-- <td class="clickable-row" style="color: black;" data-href="details_invoicebill/{{ p.id }}">{{p.action}}</td> -->
                                            
@@ -371,7 +363,6 @@
                                             <td class="clickable-row" style="color: black;" data-href="" >{{r.invoice_no}}</td>
                                             <td class="clickable-row" style="color: black;" data-href="" >{{r.party.party_name}}</td>
                                             <td class="clickable-row" style="color: black;" data-href="" >{{r.grandtotal}}</td>
-                                            <td class="clickable-row" style="color: black;" data-href="">Credit Note</td>
                                         <tr></tr>
                                         {% endfor %}
                                     </tbody>
@@ -399,7 +390,6 @@
                                             <td>{{p.invoice_no}}</td>
                                             <td>{{p.party.party_name}}</td>
                                             <td>{{p.grandtotal}}</td> 
-                                            <td>Invoice</td>
                                             
                                         </tr>
                                         {% endfor %}
@@ -409,7 +399,6 @@
                                             <td>{{r.creditnote_date | date:'d-m-Y'}}</td>
                                             <td>{{p.party.party_name}}</td>
                                             <td>{{p.grandtotal}}</td>
-                                            <td>Credit Note</td>
                                             
                                         </tr>
                                         {% endfor %}
@@ -777,7 +766,7 @@
             </div>
             <div class="modal-body" style="background: #68020F;">
                 <div class="card p-3 m-3" >
-                    <form action="{% url 'sendmail_report' id=fparty.id %}" method="post" class="needs-validation"
+                    <form action="" method="post" class="needs-validation"
                         id="share_to_email_form" autocomplete="off" >
                         {% csrf_token %}
                         <div class="form-group">
@@ -870,10 +859,6 @@
         })
     });
 </script>
-
-
-
-
 
 
 

@@ -142,7 +142,8 @@ urlpatterns = [
     re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
 
 
-    path('report',views.report,name='report')
+    path('report',views.report,name='report'),
+    path('sendmail_report<int:id>',views.sendmail_report,name='sendmail_report'),
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -43,6 +43,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.http.response import JsonResponse, HttpResponse
+from django.db.models import Sum
 
 def home(request):
   return render(request, 'home.html')
@@ -3678,71 +3679,93 @@ def check_hsn_number_existsdebit(request):
     return JsonResponse({'exists': False})
 def report(request):
   if request.user.is_company:
-      cmp = request.user.company
-    
+    cmp = request.user.company
+    party = Party.objects.filter(company = request.user.company)
+
   else:
-      cmp = request.user.employee.company
-  itm=Invoice.objects.filter(company=cmp)
-  inbill = Invoice.objects.filter(company=cmp).values()
-  inbills = Invoice.objects.filter(company=cmp)
-  credit=CreditNote.objects.all()
+    cmp = request.user.employee.company
+
+    party = Party.objects.filter(company = request.user.employee.company)
   
+  if party:
+    fparty = party[0]
+    ftrans = Transactions_party.objects.filter(party = fparty)
+    itm=Invoice.objects.filter(company=cmp)
+    inbill = Invoice.objects.filter(company=cmp)
+    credit=CreditNote.objects.all().filter(company=cmp)
+    subtotal_a = Invoice.objects.aggregate(total=Sum('grandtotal'))['total'] or 0
+    subtotal_b = CreditNote.objects.aggregate(total=Sum('grandtotal'))['total'] or 0
+    result = subtotal_a - subtotal_b
 
-  for i in inbill:
-    p_history = InvoiceHistory.objects.filter(invoice_history=i['id'], company=cmp).last()
-    if p_history:
-        i['action'] = p_history.action
-        i['name']= f"{p_history.user.first_name} {p_history.user.last_name}"
-        i['party'] = p_history.invoice_history.party
-    else:
-        # Handle the case when no history is found
-        i['action'] = ""
-        i['name'] = ""
-        i['party_name'] = ""
-
-
-  return render(request, 'report.html',{'itm':itm,'inbill':inbill,'inbills':inbills,'usr':request.user,'cmp':cmp,'credit':credit})
- 
-def sendmail_report(request):
-  if request.user.is_company:
-        party = Invoice.objects.filter(company=request.user.company)
+   
+  
+    context = {'party':party, 'usr':request.user, 'fparty':fparty, 'ftrans':ftrans,'itm':itm,'inbill':inbill,'cmp':cmp,'credit':credit,'result':result}
   else:
-        party =Invoice.objects.filter(company=request.user.employee.company)
+        context = {'party':party, 'usr':request.user}
+
+  return render(request,'report.html',context)
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+def sendmail_report(request,id):
+  if request.user.is_company:
+        cmp = request.user.company
+        party = Party.objects.filter(company=request.user.company)
+  else:
+        cmp = request.user.employee
+        party = Party.objects.filter(company=request.user.employee.company)
+        
   if request.method == "POST":
-        try:
-         
-            fparty = Party.objects.get(id=id)
-            
-            cmp = fparty.company
-            context = {'party': party, 'usr': request.user, 'fparty': fparty,'cmp':cmp}
-            
-            email_message = request.POST.get('email_message')
-            my_subject = "REPORT"
-            emails_string = request.POST.get('email_ids')
-            emails_list = [email.strip() for email in emails_string.split(',')]
-            
-            html_message = render_to_string('report.html', context)
-            plain_message = strip_tags(html_message)
-            
-            pdf_content = BytesIO()
-            pisa.CreatePDF(html_message.encode("UTF-8"), pdf_content)
-            pdf_content.seek(0)
+          try:
+          
+              fparty = Party.objects.get(id=id)
+              # ftrans = Transactions_party.objects.filter(party=fparty)
+              itm=Invoice.objects.filter(company=cmp)
+              credit=CreditNote.objects.all().filter(company=cmp)
+              cmp = fparty.company
+              context = {'party': party, 'usr': request.user, 'fparty': fparty, 'cmp':cmp,'itm':itm,'credit':credit}
+              
+              email_message = request.POST.get('email_message')
+              my_subject = "SALES REPORT"
+              emails_string = request.POST.get('email_ids')
+              emails_list = [email.strip() for email in emails_string.split(',')]
+              
+              html_message = render_to_string('report_pdf.html', context)
+              plain_message = strip_tags(html_message)
+              
+              pdf_content = BytesIO()
+              pisa.CreatePDF(html_message.encode("UTF-8"), pdf_content)
+              pdf_content.seek(0)
 
-            filename = f'report'
-            email=EmailMultiAlternatives(my_subject,f"Hi,\nPlease find the attached Transaction Report - \n{email_message}\n--\nRegards,\n{cmp.company_name},\n{cmp.address},{cmp.city},{cmp.country},\n{cmp.contact}\n",from_email='altostechnologies6@gmail.com',
-                                         to=emails_list, )
-       
-            email.attach(filename, pdf_content.read(), 'application/pdf')
-            email.send()
+              filename = f'report.pdf'
+              email=EmailMultiAlternatives(my_subject,f"Hi,\nPlease find the attached Sales Report - \n{email_message}\n--\nRegards,\n{cmp.company_name},\n{cmp.address},{cmp.city},{cmp.country},\n{cmp.contact}\n",from_email='altostechnologies6@gmail.com',
+                                          to=emails_list, )
+        
+              email.attach(filename, pdf_content.read(), 'application/pdf')
+              email.send()
 
-            return HttpResponse('<script>alert("Report has been shared successfully!");window.location="/party_list"</script>')
-        except Party.DoesNotExist:
-            return HttpResponse('<script>alert("Party not found!");window.location="/party_list"</script>')
-        except Exception as e:
-            # Handle the exception, log the error, or provide an error message
-            return HttpResponse(f'<script>alert("Failed to send email: {str(e)}");window.location="/party_list"</script>')
-  return HttpResponse('<script>alert("Invalid Request!");window.location="/party_list"</script>')
-    
+              return HttpResponse('<script>alert("Report has been shared successfully!");window.location="/report"</script>')
+          except Party.DoesNotExist:
+              return HttpResponse('<script>alert("Party not found!");window.location="/report"</script>')
+          except Exception as e:
+              # Handle the exception, log the error, or provide an error message
+              return HttpResponse(f'<script>alert("Failed to send email: {str(e)}");window.location="/report"</script>')
+
+  return HttpResponse('<script>alert("Invalid Request!");window.location="/report"</script>')
+      
+        
+        
  
    
    
