@@ -2,8 +2,6 @@
 {% load social_share %}
 {% block content %}
 
-
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -191,27 +189,15 @@
             });
         });
     </script>
- <script>
-    // Function to parse URL parameters
-    function getUrlParams() {
-      const params = {};
-      window.location.search.substring(1).split('&').forEach(param => {
-        const [key, value] = param.split('=');
-        params[key] = decodeURIComponent(value);
-      });
-      return params;
-    }
-
-    // Get search parameters from URL
-    const { fromDate, toDate } = getUrlParams();
-
-    // Display the search parameters on the page
-    document.getElementById('selectedDates').innerHTML = `<p>Searching from ${fromDate} to ${toDate}</p>`;
-    // Here you can perform actual search operations based on fromDate and toDate
-  </script>   
+    
     
 </body>
 
 </html>
+
+
+
+            
+
 
 {% endblock %}

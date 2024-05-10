@@ -44,6 +44,11 @@ from django.utils.html import strip_tags
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.http.response import JsonResponse, HttpResponse
 from django.db.models import Sum
+from django.db.models.functions import ExtractMonth, ExtractYear
+import datetime
+from matplotlib import pyplot as plt
+import numpy as np
+
 
 def home(request):
   return render(request, 'home.html')
@@ -3696,6 +3701,7 @@ def report(request):
     subtotal_a = Invoice.objects.aggregate(total=Sum('grandtotal'))['total'] or 0
     subtotal_b = CreditNote.objects.aggregate(total=Sum('grandtotal'))['total'] or 0
     result = subtotal_a - subtotal_b
+    
 
    
   
@@ -3763,9 +3769,55 @@ def sendmail_report(request,id):
               return HttpResponse(f'<script>alert("Failed to send email: {str(e)}");window.location="/report"</script>')
 
   return HttpResponse('<script>alert("Invalid Request!");window.location="/report"</script>')
-      
-        
-        
- 
-   
-   
+def sales_graph(request):
+    # Query your data, for example, get sales data for the last 12 months
+    sales_data = Invoice.objects.filter(invoice_date__gte=timezone.now() - timedelta(days=365)).order_by('invoice_date')
+    
+    # Extracting dates and corresponding total sales
+    dates = [invoice.invoice_date for invoice in sales_data]
+    sales = [invoice.grandtotal for invoice in sales_data]
+
+    # Plotting the data
+    plt.figure(figsize=(10, 6))
+    plt.plot(dates, sales, marker='o', linestyle='-')
+    plt.title('Sales Over Time')
+    plt.xlabel('Date')
+    plt.ylabel('Total Sales')
+    plt.grid(True)
+    
+    # Format x-axis as dates
+    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
+    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+    plt.gcf().autofmt_xdate()
+
+    # Save the plot to a temporary file
+    plt.tight_layout()
+    plt.savefig('sales_plot.png')
+    plt.close()
+
+    # Render the image in the template
+    with open('sales_plot.png', 'rb') as f:
+        plot_image = f.read()
+
+    return HttpResponse(plot_image, content_type='image/png')
+  
+def yearly_sales(request):
+    yearly_sales = Invoice.objects.annotate(
+        year=ExtractYear('invoice_date')
+    ).values(
+        'year'
+    ).annotate(
+        total_sales=Sum('grandtotal')
+    ).order_by('year')
+
+    labels = []
+    data = []
+
+    for sale in yearly_sales:
+        labels.append(sale['year'])
+        data.append(sale['total_sales'])
+
+    return JsonResponse(data={
+        'labels': labels,
+        'data': data
+    })
