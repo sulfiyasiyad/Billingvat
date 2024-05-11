@@ -1,10 +1,109 @@
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sales Graph</title>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
 </head>
 <body>
-    <img src="{% url 'sales_graph' %}" alt="Sales Graph">
+    <div class="body-wrapper">
+        <br><br><br>
+        
+        <p></p>
+        <div class="row ps-3 pe-3 m-0" >
+            <div class="col-sm-12 ps-2 pe-3">
+    <!-- Radio buttons for selecting view -->
+    <div>
+        <input type="radio" id="monthly" name="view" value="monthly" checked>
+        <label for="monthly">Monthly</label>
+        <input type="radio" id="yearly" name="view" value="yearly">
+        <label for="yearly">Yearly</label>
+    </div>
+
+    <canvas id="salesChart" width="800" height="400"></canvas>
+    </div>
+    </div>
+    </div>
+
+    <script>
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        var myChart;
+
+        // Function to update chart based on selected view
+        function updateChart(view) {
+            if (myChart) {
+                myChart.destroy(); // Destroy previous chart instance
+            }
+
+            var data;
+            var options;
+
+            if (view === 'monthly') {
+                data = {
+                    labels: {{ months|safe }},
+                    datasets: [{
+                        label: 'Total Sales',
+                        data: {{ total_sales|safe }},
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                };
+                options = {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                };
+            } else if (view === 'yearly') {
+                // You need to have data for yearly view
+                // For simplicity, let's assume yearly data is already available
+                // Replace this with your actual yearly data
+                var yearlyData = {{ total_sales|safe }}; // Removing the unnecessary array brackets
+
+                data = {
+                    labels: {{ years|safe }},
+                    datasets: [{
+                        label: 'Total Sales',
+                        data: yearlyData,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1,
+                        fill: true // Fill the area under the line
+                    }]
+                };
+                options = {
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    }
+                };
+            }
+
+            // Create new chart
+            myChart = new Chart(ctx, {
+                type: (view === 'monthly' ? 'bar' : 'line'), // Change chart type to line for yearly view
+                data: data,
+                options: options
+            });
+        }
+
+        // Initially load chart with monthly view
+        updateChart('monthly');
+
+        // Add event listener to radio buttons
+        document.querySelectorAll('input[name="view"]').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                updateChart(this.value);
+            });
+        });
+    </script>
 </body>
 </html>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+
+
+
+    <!-- Include Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+</head>
+<body>
+    <div class="body-wrapper">
+        <br><br><br>
+        <div class="row ps-3 pe-3 m-0" >
+            <div class="col-sm-12 ps-2 pe-3">
+                <div style=" margin-top: 20px;">
+                    <input type="radio" id="monthly" name="view" value="monthly" checked>
+                    <label for="monthly">Monthly</label>
+                    <input type="radio" id="yearly" name="view" value="yearly">
+                    <label for="yearly">Yearly</label>
+                </div>
+
+              
+                <!-- <canvas id="yearChart" width="800" height="400"></canvas> -->
+            </div>
+        </div>
+
+    </div>
+    if (view === 'monthly'){
+        hai
+    }
+    else{
+        <h1>hello</h1>
+    }
+    
+   
+</body>
+</html>
+{% endblock %}
+<!-- sales_chart.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sales Chart</title>
+    <!-- Include Chart.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.min.js"></script>
+</head>
+<body>
+    <canvas id="salesChart" width="800" height="400"></canvas>
+
+    <script>
+        var ctx = document.getElementById('salesChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+            type: 'bar', // Change type to bar for bar chart
+            data: {
+                labels: {{ months|safe }},
+                datasets: [{
+                    label: 'Total Sales',
+                    data: {{ total_sales|safe }},
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    </script>
+</body>
+</html>

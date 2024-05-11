@@ -145,7 +145,7 @@ urlpatterns = [
     path('report',views.report,name='report'),
     path('sendmail_report<int:id>',views.sendmail_report,name='sendmail_report'),
     path('sales_graph',views.sales_graph,name='sales_graph'),
-    path('yearly-sales/', views.yearly_sales, name='yearly_sales'),
+  
 
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

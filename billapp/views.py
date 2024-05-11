@@ -43,11 +43,13 @@ from django.core.mail import EmailMultiAlternatives
 from django.utils.html import strip_tags
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.http.response import JsonResponse, HttpResponse
-from django.db.models import Sum
+from django.db.models import Sum,Subquery, OuterRef
 from django.db.models.functions import ExtractMonth, ExtractYear
 import datetime
 from matplotlib import pyplot as plt
 import numpy as np
+from django.db.models.functions import TruncMonth,TruncYear
+
 
 
 def home(request):
@@ -3770,54 +3772,15 @@ def sendmail_report(request,id):
 
   return HttpResponse('<script>alert("Invalid Request!");window.location="/report"</script>')
 def sales_graph(request):
-    # Query your data, for example, get sales data for the last 12 months
-    sales_data = Invoice.objects.filter(invoice_date__gte=timezone.now() - timedelta(days=365)).order_by('invoice_date')
+        sales_data = Invoice.objects.all()
     
-    # Extracting dates and corresponding total sales
-    dates = [invoice.invoice_date for invoice in sales_data]
-    sales = [invoice.grandtotal for invoice in sales_data]
 
-    # Plotting the data
-    plt.figure(figsize=(10, 6))
-    plt.plot(dates, sales, marker='o', linestyle='-')
-    plt.title('Sales Over Time')
-    plt.xlabel('Date')
-    plt.ylabel('Total Sales')
-    plt.grid(True)
-    
-    # Format x-axis as dates
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
-    plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
-    plt.gcf().autofmt_xdate()
-
-    # Save the plot to a temporary file
-    plt.tight_layout()
-    plt.savefig('sales_plot.png')
-    plt.close()
-
-    # Render the image in the template
-    with open('sales_plot.png', 'rb') as f:
-        plot_image = f.read()
-
-    return HttpResponse(plot_image, content_type='image/png')
-  
-def yearly_sales(request):
-    yearly_sales = Invoice.objects.annotate(
-        year=ExtractYear('invoice_date')
-    ).values(
-        'year'
-    ).annotate(
-        total_sales=Sum('grandtotal')
-    ).order_by('year')
-
-    labels = []
-    data = []
-
-    for sale in yearly_sales:
-        labels.append(sale['year'])
-        data.append(sale['total_sales'])
-
-    return JsonResponse(data={
-        'labels': labels,
-        'data': data
-    })
+        sales_by_month = sales_data.annotate(month=TruncMonth('invoice_date')).values('month').annotate(total_sales=Sum('grandtotal'))
+        months = [entry['month'].strftime('%B %Y') for entry in sales_by_month]
+        total_sales = [float(entry['total_sales']) for entry in sales_by_month]
+        sales_by_year = sales_data.annotate(year=TruncYear('invoice_date')).values('year').annotate(total_sales=Sum('grandtotal'))
+        # years = [entry['year'].year for entry in sales_by_year]
+        years = [entry['year'].strftime(' %Y') for entry in sales_by_year]
+        total_yearly_sales = [float(entry['total_sales']) for entry in sales_by_year]
+        return render(request,'sales_graph.html',{'months': months, 'total_sales':total_sales,'years': years,
+      'total_yearly_sales': total_yearly_sales})
