@@ -1,0 +1,980 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.6"
+    integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+<!-- Include html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+<script src="https://unpkg.com/htmx.org@1.9.6"
+    integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+    crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    
+
+
+
+
+
+<style>
+ 
+     .bs{
+        box-shadow: 2px 2px 10px 3px rgba(0, 0, 0, 0.397);
+    }
+
+    .bs_sm{
+        box-shadow: inset 2px 2px 5px 3px rgba(0, 0, 0, 0.199);
+    }
+
+    .paiddiv{
+        color: black;
+        height: 10vh;
+        width: 20vh;
+        padding-left: 2vh;
+        padding-top: 1vh;
+        padding-bottom: 1vh;
+        margin-left: 7vh;
+        border-radius: 8px;
+        background-color: #FFADB0;
+    }
+
+    .unpaiddiv{
+        color: black;
+        height: 10vh;
+        width: 20vh;
+        padding-left: 2vh;
+        padding-top: 1vh;
+        padding-bottom: 1vh;
+        margin-left: 7vh;
+        border-radius: 8px;
+        background-color: #FFADB0;
+    }
+
+    .totaldiv{
+        color: black;
+        height: 10vh;
+        width: 20vh;
+        padding-left: 2vh;
+        padding-top: 1vh;
+        padding-bottom: 1vh;
+        margin-left: 7vh;
+        border-radius: 8px;
+        background-color:#FFADB0;
+    }
+
+    #billtable tbody{
+        cursor: pointer;
+    }
+
+    #emptyMessage {
+        display: none;
+        font-size: x-large;
+        font-weight: bold;
+        color: red;
+    } 
+
+   
+
+    
+
+   
+
+     .tplus{
+        margin-top: 3vh;
+        margin-left: 5vh;
+        margin-right: -2vh;
+    } 
+
+     .tequal{
+        margin-top: 3vh;
+        margin-left: 5vh;
+        margin-right: -2vh;
+    }
+
+    .tg{
+        color: rgb(0, 140, 7);
+    }
+
+    .tr{
+        color: #68020F;
+    }
+
+    .tj{
+        color:#E4A11B;
+    }
+
+    .th{
+        color: black;
+    }
+
+    @media print{
+        body{
+            visibility: hidden !important; 
+        }
+
+        .printContainer {
+            visibility: visible !important; 
+            position: absolute;
+            z-index: 99999;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            font-size: large;
+        } 
+
+        #calcdiv{
+            visibility: visible;
+            margin-top: -30vh;
+            margin-left: -9vh;
+            margin-bottom: 30vh;
+        }
+
+        #billtable{
+            margin-top: 20vh;
+            margin-bottom: 20vh;
+        }
+
+        #billtable th{
+            font-size: medium;
+        }
+
+        .extra{
+            display: none;
+        }
+    }
+    
+    ::-webkit-scrollbar{
+        display: none
+    } 
+    
+    
+
+
+
+
+
+
+    .dropbtn {
+   
+     color: white; 
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+  }
+  .dropdown {
+    position: relative;
+     display: inline-block; 
+  }
+  /* Style for the dropdown button */
+  /* .dropbtn {
+    
+    color: white;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    cursor: pointer;
+    min-width: 20px;
+    min-height:20px
+  } */
+  
+  /* Style for the dropdown content */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+     background-color: #f9f9f9; 
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  /* Style for the dropdown links */
+  .dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+  }
+  
+  /* Style for the dropdown links on hover */
+  .dropdown-content a:hover {
+    background-color: #f1f1f1;
+  }
+
+</style>
+<style>
+    .toolbar-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .toolbar-container .form-inline {
+            display: flex;
+            align-items: center;
+        }
+        .toolbar-container .form-inline .form-group {
+            margin-right: 15px;
+        }
+        .toolbar-container .btn-toolbar {
+            display: flex;
+        }
+        .toolbar-container .btn-toolbar .btn {
+            margin-right: 10px;
+        }
+</style>
+{% if itm %}
+
+    
+<div class="body-wrapper">
+    <br><br><br>
+    
+    <p></p>
+    <div class="row ps-3 pe-3 m-0" >
+        <div class="col-sm-14 ps-2 pe-3">
+            <div class="row pt-0 m-0">
+                <div class="card p-0 bg-light bs"><br>
+                    <div class="row">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-2" style="margin-left: 3vh;">
+                                    <div class="form-group">
+                                        <label for="fromDate" style="color: black; margin-bottom: 1vh;">From Date:</label>
+                                        <input type="date" class="form-control h-100 border-danger" id="fromDate" style="color: black; background-color: white;" onchange="filterDates(this.value)">
+                                        
+                                        
+                                    </div>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="form-group">
+                                        <label for="toDate" style="color: black; margin-bottom: 1vh;">To Date:</label>
+                                        <input type="date" class="form-control h-100 border-danger" id="toDate" style="color: black; background-color: white;" onchange="filterDates()">
+                                    </div>
+                                </div>
+                                <div class="col-md-3"></div>
+                                
+                                 <div class="col-md-4 text-left" style="margin-left: 9vh;">
+                                    <!-- <button class="btn mt-3" type="button" onclick="ExportToExcel()" style="margin-right: 2vh; margin-left: 2vh;" style="color: #FF474D;"> -->
+                                        <!-- <span><img width="25px" src="data:image/png;base64,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" alt="no img"></span> -->
+                                        
+                                        <!-- <br><span style="color: black; font-size: small; font-weight: bold;">Excel</span> -->
+                                        <!-- <i class="fas fa-file-excel" style="font-size:175%;"></i><br>EXCEL -->
+
+
+                                    <!-- </button> -->
+                                    
+                                    <button class="btn p-0 ps-4 pe-2 ms-2 mt-3" type="button" onclick="printfunction()"
+                                            style="color: #68020F">
+                                            <i class="fa-solid fa-print" style="font-size:175%;"></i><br>PRINT
+                                            
+                                    </button>
+                                    <button class="btn p-0 ps-3 pe-2 ms-2 mt-3" type="button" onclick="exportToExcel()"
+                                            style="color: #68020F">
+                                            <i class="fas fa-file-excel " style="font-size:175%;"></i><br>EXCEL
+                                    </button>
+                                    <button class="btn p-0 ps-3 pe-2 ms-2 mt-3" type="button" id="download-pdf"
+                                            style="color: #68020F;">
+                                            <i class="fas fa-file-pdf" style="font-size:175%;"></i><br>PDF
+                                    </button>
+                                    <a href="{% url 'sales_graph' %}">
+                                    <button class="btn p-0 ps-3 pe-2 ms-2 mt-3" type="button" style="color: #68020F">
+                                        
+
+                                        <i class="fa fa-line-chart" aria-hidden="true" style="font-size:175%;"></i><br>GRAPH
+                                            
+                                    </button>
+
+                                    
+                                    
+                                    
+
+
+                                    <a class="text-dark" data-toggle="dropdown">
+                                        <button class="btn p-0 ps-3 pe-2 mt-3" type="button" style="color: #68020F" title="Share"><i class="fa fa-share" aria-hidden="true" style="font-size:158%; font-weight: bold;" ></i> <br>SHARE</button>
+                                    </a>
+                                    <div class="dropdown-menu ">
+                                        <a class="dropdown-item" data-target="#sharereportEmail"
+                                            data-toggle="modal">GMAIL</a>
+                                        <a class="dropdown-item" href="javascript:void(0);"
+                                            onclick="shareOnWhatsApp()">WhatsApp</a>
+                                    </div>
+                                    
+
+                                   
+                                   
+                                     
+                                   
+                                   
+                                   
+                                    
+                                   
+
+                                   
+                                    
+                                   
+                                    
+
+                                    
+                                    
+                                    
+                                    
+
+                                    
+                                
+                                
+                            
+                        </div>
+                    </div><br>
+                    
+                   
+                    <br>
+                </div>
+            </div>
+            <div id="content2">
+            <div id="reporttable">
+            <div id="whatToPrint">
+         
+           
+            <h1 style="text-align: center;">{{cmp.company_name}}</h1>
+            <h2 style="text-align: center;">Sales Reports</h2> 
+            <p id="selectedDates" style="color: black; text-align: center;"></p> 
+
+           
+
+            <div class="row pt-0 m-0">
+                    <div class="row">
+                        <div class="col-md-12" style="margin-left: 2vh;">
+                            <div class="mt-3" style="overflow: scroll;height: 28rem; width: 96%;" id="tablediv">
+                                <table class="table table-bordered table-dangerbtn-danger table-striped tb table-responsive w-100" id="billtable"  style="text-align: center;">
+                                    
+                                    <thead >
+                                        <tr class="fs-2 tb">
+                                            <th style="background-color: #68020F;" class=" border-danger text-white">
+                                                DATE 
+                                                
+                                               
+                                            </th>
+                                            <th style="background-color:#68020F;" class=" border-danger text-white">
+                                                INVOICE NO 
+                                               
+                                            </th>
+                                            <th style="background-color: #68020F;" class=" border-danger text-white">
+                                                PARTY NAME 
+                                                
+                                            </th>
+                                            <th style="background-color: #68020F;" class=" border-danger text-white">
+                                                TYPE
+
+                                            </th>
+                                            <th style="background-color: #68020F;" class=" border-danger text-white">
+                                                AMOUNT
+
+                                            </th>
+                                            
+    
+                                            
+                                           
+                                            
+                                            
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for p  in inbill  %}
+                                        <tr id="whatToPrint">
+                                            <td class="clickable-row" style="color: black;" data-href="details_invoicebill/{{ p.id }}" >{{p.invoice_date | date:'d-m-Y'}}</td>
+                                            <td class="clickable-row" style="color: black;" data-href="details_invoicebill/{{ p.id }}">{{p.invoice_no}}</td>
+                                            <td class="clickable-row" style="color: black;" data-href="details_invoicebill/{{ p.id }}">{{ p.party.party_name }}</td>
+
+                                            <td class="clickable-row" style="color: black;" data-href="details_invoicebill/{{ p.id }}">Invoice</td>
+                                            <td class="clickable-row" style="color: black;" data-href="details_invoicebill/{{ p.id }}">{{p.grandtotal}}</td>
+
+                                           
+                                            <td style="color: black;" hidden>{{p.advance}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        
+                                        {% for r in credit  %}
+
+                                        <tr id="whatToPrint">
+                                            <td class="clickable-row" style="color: black;" data-href="" >{{r.creditnote_date | date:'d-m-Y'}}</td>
+                                            <td class="clickable-row" style="color: black;" data-href="" >{{r.party_id}}</td>
+                                            <td class="clickable-row" style="color: black;" data-href="" >{{r.party.party_name}}</td>
+                                            <td class="clickable-row" style="color: black;" data-href="" >Credit Note</td>
+                                            <td class="clickable-row" style="color: black;" data-href="">{{r.grandtotal}}</td>
+                                           
+                                        <tr></tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <h3 style="margin-left: 75%;">Total Sales :{{result}}</h3>
+
+                                <p id="emptyMessage" style="text-align: center;">
+                                    <br><br><br>
+                                    No data  
+                                </p>
+                                <!-- <table  hidden>
+                                    <thead >
+                                        <tr class="fs-2 tb" >
+                                            <th> DATE </th>
+                                            <th> INVOICE NO </th>
+                                            <th> PARTY NAME </th>
+                                            <th> AMOUNT </th>
+                                            
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for p in inbill %}
+                                      
+                                        <tr>
+                                             <td>{{p.invoice_date | date:'d-m-Y'}}</td>
+                                            <td>{{p.invoice_no}}</td>
+                                            <td>{{p.party.party_name}}</td>
+                                            <td>{{p.grandtotal}}</td> 
+                                            <td>Invoice</td>
+                                            
+                                        </tr>
+                                        {% endfor %}
+                                       
+                                        <tr>
+                                            {% for r in credit %}
+                                            <td>{{r.creditnote_date | date:'d-m-Y'}}</td>
+                                            <td>{{p.invoice_no}}</td>
+                                            <td>{{r.party.party_name}}</td>
+                                            <td>{{r.grandtotal}}</td>
+                                            <td>Credit Note</td>
+                                            
+                                        </tr>
+                                        {% endfor %}
+
+                                    </tbody>
+
+                                </table>
+                                
+
+                                 -->
+
+                                
+                                
+                            </div>
+                        </div>
+                    </div>                        
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
+        </div>
+    </div>
+  
+</div>
+
+
+    
+{% endif %} 
+
+
+
+ 
+                                   
+                                    
+                                   
+
+
+
+
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+ 
+    <script>
+        document.getElementById('fromDate').addEventListener('change', updateMinDate);
+        document.getElementById('toDate').addEventListener('change', updateMinDate);
+        function updateMinDate() {
+            var selectedDate = document.getElementById('fromDate').value;
+            document.getElementById('toDate').min = selectedDate;
+            var selectedDate2=document.getElementById('toDate').value;
+
+           
+            
+            document.getElementById("selectedDates").textContent = " From Date: " + selectedDate +    "     To Date: " + selectedDate2;
+
+        }
+   
+    
+    </script>
+   
+<script>
+    var table = document.getElementById('billtable');
+    var rows = table.getElementsByTagName('tr');
+    for (var i = 1; i < rows.length; i++) {
+        var pid = rows[i].getElementsByTagName('td')[1].innerText;
+        findhistory(i,pid)            
+    }
+    function findhistory( rowid,pid){
+        $.ajax({
+            type : 'POST',
+            url: "{% url 'invoicebillhistory' %}",
+            data: { 
+                id: pid ,
+                csrfmiddlewaretoken: '{{ csrf_token }}'
+            },
+            success: function(data){
+                rows[rowid].getElementsByTagName('td')[6].innerText=data.action;
+                rows[rowid].getElementsByTagName('td')[7].innerText=data.name;
+                if(data.action== 'Created'){
+                    rows[rowid].getElementsByTagName('td')[6].style.color = 'Red'
+                }else{
+                    rows[rowid].getElementsByTagName('td')[6].style.color = '#154c79'
+                }
+            }
+        });
+    }
+</script>
+
+
+
+
+<script>
+
+    function printfunction() {
+        var companyName = "{{cmp.company_name}}";
+        var print4 = document.getElementById('tablediv');
+        var printContents;
+    
+        if (print4.style.display !== 'none') {
+            printContents = document.getElementById("tablediv").innerHTML;
+        } else {
+            printContents = document.getElementById("whatToPrint").innerHTML;
+        }
+    
+        var $printerDiv = $('<div class="printContainer" id="printContainer"></div>');
+        $printerDiv.html(printContents);
+        $('body').append($printerDiv).addClass("printingContent");
+    
+        var companyElement = document.createElement("h2");
+        companyElement.textContent =  companyName;
+        $printerDiv.prepend(companyElement);
+    
+        var h1Element = document.createElement("h1");
+        h1Element.textContent = "Sales Report";
+        $printerDiv.prepend(h1Element);
+    
+        window.print();
+    
+        $printerDiv.remove();
+        $('body').removeClass("printingContent");
+    }
+    
+    </script> 
+    
+
+<script>
+    calculatetotal()
+
+    function calculatetotal(){
+        var table = document.getElementById('billtable');
+        var rows = table.getElementsByTagName('tr');
+        tpaid = 0;
+        tunpaid = 0;
+        ttotal = 0; 
+        for (var i = 1; i < rows.length; i++) {
+            if(rows[i].style.display !='none'){
+                var pcells = rows[i].getElementsByTagName('td')[9];
+                var ptextValue = pcells.textContent || pcells.innerText;
+                tpaid += parseFloat(ptextValue)
+
+                var ucells = rows[i].getElementsByTagName('td')[5];
+                var utextValue = ucells.textContent || ucells.innerText;
+                tunpaid += parseFloat(utextValue)
+
+                var tcells = rows[i].getElementsByTagName('td')[4];
+                var ttextValue = tcells.textContent || tcells.innerText;
+                ttotal += parseFloat(ttextValue)
+            }
+        }
+        document.getElementById('paidval').textContent = tpaid
+        document.getElementById('unpaidval').textContent = tunpaid
+        document.getElementById('totalval').textContent = ttotal
+    }
+</script>
+
+<script>
+    function cleardropdown(index){
+        if(index == 0){
+            document.getElementById('filterInput'+index).value = '';
+        }else{
+            document.getElementById('filterInput'+index).value = null;
+        }
+    }
+
+    function toggleDropdown(index) {
+        var dropdownContent = document.getElementById('dropdownContent' + index);
+        var isVisible = dropdownContent.style.display === 'block';
+        var allDropdowns = document.querySelectorAll('.dropdown-content');
+        allDropdowns.forEach(function (dropdown) {
+            dropdown.style.display = 'none';
+        });
+        dropdownContent.style.display = isVisible ? 'none' : 'block';
+    }
+
+    function filterTable(index) {
+        var input;
+        document.getElementById('dropdownContent' + index).style.display = 'none';
+        if (index === 0) {
+            input = document.getElementById('filterInput' + index).value;
+        } else {
+            input = document.getElementById('filterInput' + index).value.toUpperCase();
+        }
+        var table = document.getElementById('billtable');
+        var rows = table.getElementsByTagName('tr');
+        var emptyMessage = document.getElementById('emptyMessage');
+        var isEmpty = true;
+        for (var i = 1; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName('td');
+            var cell = cells[index];
+            if (cell) {
+                var textValue = cell.textContent || cell.innerText;
+                if (index === 0) {
+                    if (input==''){
+                        rows[i].style.display = 'table-row';
+                            isEmpty = false;
+                    }else{
+                        dateval  = textValue.replace(/(\d{2})-(\d{2})-(\d{2})/, "$2-$1-$3");
+                        inputval  = input.replace(/(\d{2})-(\d{2})-(\d{2})/, "$2-$1-$3");
+                        const formattedDate = formatDateString(input);
+                        if (dateval === formattedDate) {
+                            rows[i].style.display = 'table-row';
+                            isEmpty = false;
+                        } else {
+                            rows[i].style.display = 'none';
+                        }
+                    }
+                } else {
+                    if (textValue.toUpperCase().includes(input)) {
+                        rows[i].style.display = 'table-row';
+                        isEmpty = false;
+                    } else {
+                        rows[i].style.display = 'none';
+                    }
+                }
+            }
+        }
+        emptyMessage.style.display = isEmpty ? 'block' : 'none';
+        calculatetotal()
+    }
+
+    function formatDateString(inputDate) {
+        const parsedDate = new Date(inputDate);
+        const day = parsedDate.getDate();
+        const month = parsedDate.getMonth() + 1;
+        const year = parsedDate.getFullYear();
+        const formattedDate = `${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}-${year}`;
+        return formattedDate;
+    }
+</script>
+
+<script>
+    function filterDates(selectedDate) {
+        var fromDate = document.getElementById("fromDate").value;
+        var selectedDate = new Date(fromDate);
+        selectedDate.setDate(selectedDate.getDate() - 1);
+        var toDate = document.getElementById("toDate").value;
+        var table = document.getElementById("billtable");
+        var rows = table.getElementsByTagName("tr");
+        var emptyMessage = document.getElementById('emptyMessage');
+        var isEmpty = true;
+        for (var i = 1; i < rows.length; i++) {
+            var currentDate = rows[i].getElementsByTagName("td")[0].innerText;
+            var date = new Date(currentDate.replace(/(\d{2})-(\d{2})-(\d{2})/, "$2/$1/$3"));
+            if ((fromDate && date >= selectedDate) || !fromDate) {
+                if ((toDate && date <= new Date(toDate)) || !toDate) {
+                    rows[i].style.display = "table-row";
+                    isEmpty = false;
+                } else {
+                    rows[i].style.display = "none";
+                }
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+        emptyMessage.style.display = isEmpty ? 'block' : 'none';
+        calculatetotal()
+        // Store filtered data in session storage
+        sessionStorage.setItem('filteredData', JSON.stringify(filteredData));
+    }
+</script>
+
+<script>
+    jQuery(document).ready(function($) {
+        $(".clickable-row").click(function() {
+            window.location = $(this).data("href");
+        });
+    });
+</script>
+
+
+
+<script>
+    document.getElementById("search_input").addEventListener("input", function() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("search_input");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("billtable");
+        tr = table.getElementsByTagName("tr");
+        var emptyMessage = document.getElementById("emptyMessage");
+        var anyMatch = false;
+        for (i = 1; i < tr.length; i++) {
+            tr[i].style.display = "table-row";
+            var found = false;
+            for (td of tr[i].getElementsByTagName("td")) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().includes(filter)) {
+                    found = true;
+                    anyMatch = true;
+                    break;
+                }
+            }
+            if (!found) {
+                tr[i].style.display = "none";
+            }
+        }
+        emptyMessage.style.display = anyMatch ? "none" : "block";
+        calculatetotal()
+    });
+</script>
+
+ <script>
+    function exportToExcel(){
+        const table = document.querySelector('#reporttable');
+        const ws = XLSX.utils.table_to_sheet(table);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+        XLSX.writeFile(wb, 'report.xlsx');
+    }
+    
+    
+</script> 
+
+
+
+
+
+
+
+
+
+
+
+
+<script> // Function to convert the HTML page to PDF and download
+    function downloadPDF() {
+        // Select the HTML element to be converted to PDF
+       
+        const content2 = document.getElementById('content2').outerHTML;
+
+        // Concatenate content1 and content2
+        const mergedContent =  content2;
+       
+
+        // Options for PDF generation
+        var options = {
+            filename: 'report.pdf',
+             image: { type: 'jpeg', quality: 0.98 },
+             html2canvas: { scale: 2 },
+             jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        // Call the html2pdf library to generate PDF
+         html2pdf()
+             .from(mergedContent)
+             .set(options)
+             .save();
+     }
+
+    // Add click event listener to the download button
+     document.getElementById('download-pdf').addEventListener('click', downloadPDF);
+
+    
+   
+     
+
+
+
+
+
+
+
+
+
+
+
+
+        // Function to convert the HTML page to PDF and download
+        // function downloadPDF() {
+            // Select the HTML element to be converted to PDF
+            // var element = document.body;
+
+            // Options for PDF generation
+            // var options = {
+            //     filename: 'report.pdf',
+            //     image: { type: 'jpeg', quality: 0.98 },
+            //     html2canvas: { scale: 2 },
+            //     jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            // };
+
+            // Call the html2pdf library to generate PDF
+        //     html2pdf()
+        //         .from(element)
+        //         .set(options)
+        //         .save();
+        // }
+
+        // Add click event listener to the download button
+        // document.getElementById('download-pdf').addEventListener('click', downloadPDF);
+    </script>
+    
+
+
+</script>
+{% if party %}
+<div class="modal fade" id="sharereportEmail">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content" style="background: #68020F; border-radius: 20px;">
+            <div class="modal-header" style="background: #68020F;">
+                <h5 class="m-3 text-uppercase text-light" id="shareBillEmailLabel">Share Via Email</h5>
+                <button type="button" class="btn btn-close btn-outline-light" data-dismiss="modal" aria-label="Close" ></button>
+            </div>
+            <div class="modal-body" style="background: #68020F;">
+                <div class="card p-3 m-3" >
+                     <form action="{% url 'sendmail_report' id=fparty.id %}" method="post" class="needs-validation"
+                        id="share_to_email_form" autocomplete="off" >
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="emailIds">Email ID</label>
+                            <textarea  class="form-control text-dark" name="email_ids" id="emailIds" rows="3"
+                                
+                             required></textarea>
+                        </div>
+                        <div class="form-group mt-2">
+                            <label for="item_unitname">Message</label>
+                            <textarea name="email_message" id="email_message" class="text-dark form-control" cols=""
+                                rows="3" ></textarea> 
+                        </div>
+                        <div class="modal-footer d-flex justify-content-center" style="border-top: 1px solid #ffff;">
+                            <button style="background: #68020F; color: white;" type="submit" id="share_with_email"
+                                class=" btn btn-outline-dark  submitShareEmailBtn " value="SEND MAIL">SEND </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <script>
+        function toggleDropdown() {
+          var dropdown = document.getElementById("myDropdown");
+          if (dropdown.style.display === "block") {
+            dropdown.style.display = "none";
+          } else {
+            dropdown.style.display = "block";
+          }
+        }
+        
+        // Close the dropdown if the user clicks outside of it
+        window.onclick = function(event) {
+          if (!event.target.matches('.dropbtn')) {
+            var dropdowns = document.getElementsByClassName("dropdown-content");
+            for (var i = 0; i < dropdowns.length; i++) {
+              var openDropdown = dropdowns[i];
+              if (openDropdown.style.display === "block") {
+                openDropdown.style.display = "none";
+              }
+            }
+          }
+        }
+     </script>
+     <script>
+        function shareOnWhatsApp() {
+        var url = window.location.href;
+        var text = url;
+        text = encodeURIComponent(text);
+        var whatsappUrl = "whatsapp://send?text=" + text;
+        window.location.href = whatsappUrl;
+    }
+     </script>
+
+<script>
+
+    $(document).ready(function () {
+        $('#share_with_email').on('click', function () {
+            var emailsInput = document.getElementById('emailIds');
+            var emailsString = emailsInput.value.trim();
+
+            var emails = emailsString.split(',').map(function (email) {
+                return email.trim();
+            });
+
+            var emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+
+            var invalidEmails = []
+            if (emailsString == "") {
+                alert('Enter valid email addresses..')
+            }
+            else {
+                for (var i = 0; i < emails.length; i++) {
+                    var currentEmail = emails[i];
+
+                    if (currentEmail != "" && !emailRegex.test(currentEmail)) {
+                        console.log(currentEmail + ' is invalid!');
+                        invalidEmails.push(currentEmail)
+                    }
+                }
+
+                if (invalidEmails.length > 0) {
+                    alert('Invalid emails..Please check!\n' + invalidEmails)
+                    // alert(invalidEmails)
+                } else {
+                    $('#share_to_email_form').submit();
+                }
+            }
+        })
+    });
+</script>
+
+
+
+
+
+
+
+{% endblock content %}
