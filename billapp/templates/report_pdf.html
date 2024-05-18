@@ -95,6 +95,7 @@
                     <th class="text-center ">DATE</th>
                     <th class="text-center ">INVOICE NUMBER</th>
                     <th class="text-center ">PARTY NAME</th>
+                    <th class="text-center ">TYPE</th>
                     <th class="text-center ">AMOUNT</th>
 
                 </tr>
@@ -108,7 +109,8 @@
                     <td class="name" style="color: black;">{{i.invoice_date | date:'d-m-Y'}}</td>
                     <td class="number name" style="color: black;">{{ i.invoice_no }}</td>
                     <td class="date name" style="color: black;">{{ i.party.party_name }}</td>
-                    <td class="number" style="color: black;">{{ i.grandtotal }}</td>
+                    <td class="number" style="color: black;">Invoice</td>
+                    <td class="number name" style="color: black;">{{ i.grandtotal }}</td>
                   
 
 
@@ -121,9 +123,11 @@
                   
                     
                     <td class="name" style="color: black;">{{r.creditnote_date | date:'d-m-Y'}}</td>
-                    <td class="number name" style="color: black;">{{r.invoice_no}}</td>
+                    <td class="number name" style="color: black;">{{r.party_id}}</td>
                     <td class="date name" style="color: black;">{{r.party.party_name}}</td>
-                    <td class="number" style="color: black;">{{ r.grandtotal }}</td>
+                    <td class="number" style="color: black;">Credit Note<td>
+                    <td class="number" style="color: black;">{{ r.grandtotal }}<td>
+                        
                   
 
 

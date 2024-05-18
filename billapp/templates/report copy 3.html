@@ -6,6 +6,39 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script src="https://unpkg.com/htmx.org@1.9.6"
+    integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.0/xlsx.full.min.js"></script>
+<!-- Include html2pdf library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+<script src="https://unpkg.com/htmx.org@1.9.6"
+    integrity="sha384-FhXw7b6AlE/jyjlZH5iHa/tTe9EpJ1Y55RjcgPbjeWMskSxZt1v9qkxLJWNJaGni"
+    crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
+    
+
+
+
+
+
 <style>
  
      .bs{
@@ -214,7 +247,7 @@
     
     <p></p>
     <div class="row ps-3 pe-3 m-0" >
-        <div class="col-sm-12 ps-2 pe-3">
+        <div class="col-sm-14 ps-2 pe-3">
             <div class="row pt-0 m-0">
                 <div class="card p-0 bg-light bs"><br>
                     <div class="row">
@@ -234,53 +267,42 @@
                                         <input type="date" class="form-control h-100 border-danger" id="toDate" style="color: black; background-color: white;" onchange="filterDates()">
                                     </div>
                                 </div>
-                                <div class="col-md-2"></div>
+                                <div class="col-md-1"></div>
                                 
-                                <div class="col-md-4 text-left" style="margin-right: 2vh; margin-left: 4vh;">
-                                    <button class="btn mt-3" type="button" onclick="ExportToExcel()" style="margin-right: 2vh; margin-left: 2vh;">
-                                        <span><img width="25px" src="data:image/png;base64,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" alt="no img"></span>
-                                        <br><span style="color: black; font-size: small; font-weight: bold;">Excel</span>
+                                 <div class="col-md-5 text-left" style="margin-right: 2vh; margin-left: 9vh;">
+                                   
+                                    <button class="btn p-0 ps-2 pe-2 ms-2" type="button" onclick="ExportToExcel()"
+                                            style="color: #68020F">
+                                            <i class="fas fa-file-excel" style="font-size:175%;"></i><br>EXCEL
                                     </button>
+                                    <button class="btn p-0 ps-2 pe-2 ms-2" type="button" onclick="printfunction()"
+                                            style="color: #68020F">
+                                            <i class="fa-solid fa-print" style="font-size:175%;"></i><br>PRINT
+                                            
+                                    </button>
+                                    <a href="{% url 'sales_graph' %}">
+                                    <button class="btn p-0 ps-2 pe-2 ms-2" type="button" style="color: #68020F">
+                                        
 
-                                    <button class="btn mt-3" type="button" onclick="printfunction()" style="margin-right: 2vh;">
-                                        <span><img width="30px" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG-I1yOM9rgXYTTWRlIxobAir6NI0wFpRrMQ&s" alt="no img"></span>
-                                        <br><span style="color: black; font-size: small; font-weight: bold;">Print</span>
+                                        <i class="fa fa-line-chart" aria-hidden="true" style="font-size:175%;"></i><br>GRAPH
+                                            
+                                    </button>
+                                    </a>    
+                                    <button class="btn p-0 ps-2 pe-2 ms-2" type="button" id="download-pdf"
+                                            style="color: #68020F;">
+                                            <i class="fas fa-file-pdf" style="font-size:175%;"></i><br>PDF
                                     </button>
                                     
-                                     <button class="btn mt-3" type="button" id="download-pdf" style="margin-right: 2vh;">
-                                        <span><img width="30px" src="https://play-lh.googleusercontent.com/kIwlXqs28otssKK_9AKwdkB6gouex_U2WmtLshTACnwIJuvOqVvJEzewpzuYBXwXQQ=w600-h300-pc0xffffff-pd" alt="no img"></span>
-                                        <br><span style="color: black; font-size: small; font-weight: bold;">PDF</span>
-                                    </button>
-                                    <div class="dropdown">
-                                        <button class="dropbtn" onclick="toggleDropdown()" type="button">
-                                            <span><img width="20px"  src="data:image/png;base64,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" alt="no img"></span>
-                                        </button>
-                                        <div class="dropdown-content" id="myDropdown">
-                                          <a data-target="#sharereportEmail"  data-toggle="modal">Email</a>
-                                          <a 
-                                          onclick="shareOnWhatsApp()">WhatsApp</a>
-                                        </div>
-                                    </div>
-                                   
-                                   
-                                     
-                                   
-                                   
-                                   
                                     
-                                   
-
-                                   
-                                    
-                                   
-                                    
-
-                                    
-                                    
-                                    
-                                    
-
-                                    
+                                    <a class="text-dark" data-toggle="dropdown">
+                                        <button class="btn p-0 ps-2 pe-2 ms-2" type="button" style="color: #68020F" title="Share"><i class="fa fa-share" aria-hidden="true" style="font-size:150%; font-weight: bold;" ></i> <br> Share</button>
+                                    </a>
+                                    <div class="dropdown-menu ">
+                                        <a class="dropdown-item" data-target="#sharereportEmail"
+                                            data-toggle="modal">GMAIL</a>
+                                        <a class="dropdown-item" href="javascript:void(0);"
+                                            onclick="shareOnWhatsApp()">WhatsApp</a>
+                                    </div>                                 
                                 </div>
                                 
                             </div>
@@ -289,9 +311,11 @@
                     
                    
                     <br>
-                </div>
-            </div>
+                
+         
             <div id="content2">
+            <div id="reporttable">
+           
          
            
             <h1 style="text-align: center;">{{cmp.company_name}}</h1>
@@ -305,7 +329,7 @@
                         <div class="col-md-12" style="margin-left: 2vh;">
                             <div class="mt-3" style="overflow: scroll;height: 28rem; width: 97%;" id="tablediv">
                                 <table class="table table-bordered table-dangerbtn-danger table-striped tb table-responsive w-100" id="billtable"  style="text-align: center;">
-                                    <p style="margin-left: 85%;">Total Sales :{{result}}</p>
+                                    <!-- <p style="margin-left: 75%;">Total Sales :{{result}}</p> -->
                                     <thead >
                                         <tr class="fs-2 tb">
                                             <th style="background-color: #68020F;" class=" border-danger text-white">
@@ -330,16 +354,7 @@
 
                                             </th>
                                             
-                                            <!-- <th style="background-color: #FFD6D7;" class=" border-danger text-black">
-                                               ACTION
-                                                <a class="extra text-black" onclick="toggleDropdown(4)">&nbsp;<i class="fa fa-filter" aria-hidden="true"></i></a>
-                                                <div class="dropdown-content" id="dropdownContent4">
-                                                    <label for="filterInput4" style="color: black; text-align: left;">Equal To</label>
-                                                    <input type="text" id="filterInput4" />
-                                                    <a class="btn btn-danger" onclick="cleardropdown(4)">Clear</a> 
-                                                    &nbsp;<a class="btn btn-danger" onclick="filterTable(4)">Apply</a>
-                                                </div>
-                                            </th> -->
+
                                             
                                            
                                             
@@ -368,59 +383,24 @@
 
                                         <tr id="whatToPrint">
                                             <td class="clickable-row" style="color: black;" data-href="" >{{r.creditnote_date | date:'d-m-Y'}}</td>
-                                            <td class="clickable-row" style="color: black;" data-href="" >{{r.invoice_no}}</td>
+                                            <td class="clickable-row" style="color: black;" data-href="" >{{r.party_id}}</td>
                                             <td class="clickable-row" style="color: black;" data-href="" >{{r.party.party_name}}</td>
                                             <td class="clickable-row" style="color: black;" data-href="" >{{r.grandtotal}}</td>
                                             <td class="clickable-row" style="color: black;" data-href="">Credit Note</td>
                                         <tr></tr>
                                         {% endfor %}
                                     </tbody>
+
                                 </table>
+                                <h3 Style="margin-left:75%">Total Sales :{{result}}</h3>   
 
                                 <p id="emptyMessage" style="text-align: center;">
                                     <br><br><br>
                                     No data  
                                 </p>
-                                <table id="reporttable" hidden>
-                                    <thead >
-                                        <tr class="fs-2 tb" >
-                                            <th> DATE </th>
-                                            <th> INVOICE NO </th>
-                                            <th> PARTY NAME </th>
-                                            <th> AMOUNT </th>
-                                            
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for p in inbills %}
-                                      
-                                        <tr>
-                                             <td>{{p.invoice_date | date:'d-m-Y'}}</td>
-                                            <td>{{p.invoice_no}}</td>
-                                            <td>{{p.party.party_name}}</td>
-                                            <td>{{p.grandtotal}}</td> 
-                                            <td>Invoice</td>
-                                            
-                                        </tr>
-                                        {% endfor %}
-                                       
-                                        <tr>
-                                            {% for r in credit %}
-                                            <td>{{r.creditnote_date | date:'d-m-Y'}}</td>
-                                            <td>{{p.party.party_name}}</td>
-                                            <td>{{p.grandtotal}}</td>
-                                            <td>Credit Note</td>
-                                            
-                                        </tr>
-                                        {% endfor %}
-
-                                    </tbody>
-
-                                </table>
-                                
-
-                                
-
+                                                            
+{% else %}
+<p>No Sales</p>
                                 
                                 
                             </div>
@@ -430,6 +410,8 @@
             </div>
         </div>
         </div>
+        </div>
+        
     </div>
   
 </div>
@@ -496,8 +478,9 @@
 
 
 
-<script>
+<!-- <script>
     function printfunction(){
+        var companyName = "{{cmp.company_name}}";
         print4 = document.getElementById('tablediv')
         if (print4.style.display !== 'none'){
             var printContents = document.getElementById("tablediv").innerHTML;
@@ -508,14 +491,47 @@
         $printerDiv.html(printContents); 
         $('body').append($printerDiv).addClass("printingContent"); 
         var h1Element = document.createElement("h1");
-        h1Element.textContent = "Sales Report";
+        h1Element.textContent = "Sales Report"  + companyName;
         var head = document.getElementById("printContainer");
         head.insertBefore(h1Element, head.firstChild);
         window.print();
         $printerDiv.remove();
         $('body').removeClass("printingContent");
     }
-</script>
+</script> -->
+<script>
+
+function printfunction() {
+    var companyName = "{{cmp.company_name}}";
+    var print4 = document.getElementById('tablediv');
+    var printContents;
+
+    if (print4.style.display !== 'none') {
+        printContents = document.getElementById("tablediv").innerHTML;
+    } else {
+        printContents = document.getElementById("whatToPrint").innerHTML;
+    }
+
+    var $printerDiv = $('<div class="printContainer" id="printContainer"></div>');
+    $printerDiv.html(printContents);
+    $('body').append($printerDiv).addClass("printingContent");
+
+    var companyElement = document.createElement("h2");
+    companyElement.textContent =  companyName;
+    $printerDiv.prepend(companyElement);
+
+    var h1Element = document.createElement("h1");
+    h1Element.textContent = "Sales Report";
+    $printerDiv.prepend(h1Element);
+
+    window.print();
+
+    $printerDiv.remove();
+    $('body').removeClass("printingContent");
+}
+
+</script> 
+
 
 <script>
     calculatetotal()
@@ -692,7 +708,7 @@
     });
 </script>
 
-<script>
+ <script>
     function ExportToExcel(){
         const table = document.querySelector('#reporttable');
         const ws = XLSX.utils.table_to_sheet(table);
@@ -701,7 +717,20 @@
         XLSX.writeFile(wb, 'report.xlsx');
     }
     
-</script>
+    
+</script> 
+
+
+
+
+
+
+
+
+
+
+
+
 <script> // Function to convert the HTML page to PDF and download
     function downloadPDF() {
         // Select the HTML element to be converted to PDF
@@ -772,6 +801,7 @@
 
 
 </script>
+{% if party %}
 <div class="modal fade" id="sharereportEmail">
     <div class="modal-dialog modal-xl">
         <div class="modal-content" style="background: #68020F; border-radius: 20px;">
@@ -781,7 +811,7 @@
             </div>
             <div class="modal-body" style="background: #68020F;">
                 <div class="card p-3 m-3" >
-                    <form action="{% url 'sendmail_report' id=fparty.id %}" method="post" class="needs-validation"
+                     <form action="{% url 'sendmail_report' id=fparty.id %}" method="post" class="needs-validation"
                         id="share_to_email_form" autocomplete="off" >
                         {% csrf_token %}
                         <div class="form-group">
@@ -804,6 +834,7 @@
             </div>
         </div>
     </div>
+    {% endif %}
     <script>
         function toggleDropdown() {
           var dropdown = document.getElementById("myDropdown");
@@ -874,8 +905,6 @@
         })
     });
 </script>
-
-
 
 
 

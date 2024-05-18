@@ -49,6 +49,14 @@ import datetime
 from matplotlib import pyplot as plt
 import numpy as np
 from django.db.models.functions import TruncMonth,TruncYear
+from collections import defaultdict
+from decimal import Decimal
+from django.db.models import F, Sum, Value as V
+from django.db.models.functions import Coalesce
+from django.db.models import DecimalField
+from itertools import zip_longest
+import json
+from calendar import month_name
 
 
 
@@ -3700,8 +3708,8 @@ def report(request):
     itm=Invoice.objects.filter(company=cmp)
     inbill = Invoice.objects.filter(company=cmp)
     credit=CreditNote.objects.all().filter(company=cmp)
-    subtotal_a = Invoice.objects.aggregate(total=Sum('grandtotal'))['total'] or 0
-    subtotal_b = CreditNote.objects.aggregate(total=Sum('grandtotal'))['total'] or 0
+    subtotal_a = Invoice.objects.filter(company=cmp).aggregate(total=Sum('grandtotal'))['total'] or 0
+    subtotal_b = credit.aggregate(total=Sum('grandtotal'))['total'] or 0
     result = subtotal_a - subtotal_b
     
 
@@ -3710,8 +3718,105 @@ def report(request):
     context = {'party':party, 'usr':request.user, 'fparty':fparty, 'ftrans':ftrans,'itm':itm,'inbill':inbill,'cmp':cmp,'credit':credit,'result':result}
   else:
         context = {'party':party, 'usr':request.user}
-
   return render(request,'report.html',context)
+
+
+
+
+# def sendmail_report(request,id):
+#   if request.user.is_company:
+#         cmp = request.user.company
+#         party = Party.objects.filter(company=request.user.company)
+#   else:
+#         cmp = request.user.employee
+#         party = Party.objects.filter(company=request.user.employee.company)
+#         print(party)
+        
+#   if request.method == "POST":
+#           try:
+          
+#               fparty = Party.objects.get(id=id)
+#               print(fparty)
+#               # ftrans = Transactions_party.objects.filter(party=fparty)
+#               # print(ftrans)
+#               itm=Invoice.objects.filter(company=cmp)
+#               credit=CreditNote.objects.all().filter(company=cmp)
+#               cmp = fparty.company
+#               context = {'party': party, 'usr': request.user, 'fparty': fparty, 'cmp':cmp,'itm':itm,'credit':credit}
+              
+#               email_message = request.POST.get('email_message')
+#               my_subject = "SALES REPORT"
+#               emails_string = request.POST.get('email_ids')
+#               emails_list = [email.strip() for email in emails_string.split(',')]
+#               print(emails_list)
+              
+#               html_message = render_to_string('report_pdf.html', context)
+#               plain_message = strip_tags(html_message)
+              
+#               pdf_content = BytesIO()
+#               pisa.CreatePDF(html_message.encode("UTF-8"), pdf_content)
+#               pdf_content.seek(0)
+
+#               filename = f'report.pdf'
+#               email=EmailMultiAlternatives(my_subject,f"Hi,\nPlease find the attached Sales Report - \n{email_message}\n--\nRegards,\n{cmp.company_name},\n{cmp.address},{cmp.city},{cmp.country},\n{cmp.contact}\n",from_email='altostechnologies6@gmail.com',
+#                                           to=emails_list, )
+        
+#               email.attach(filename, pdf_content.read(), 'application/pdf')
+#               email.send()
+
+#               return HttpResponse('<script>alert("Report has been shared successfully!");window.location="/report"</script>')
+#           except Party.DoesNotExist:
+#               return HttpResponse('<script>alert("Party not found!");window.location="/report"</script>')
+#           except Exception as e:
+#               # Handle the exception, log the error, or provide an error message
+#               return HttpResponse(f'<script>alert("Failed to send email: {str(e)}");window.location="/report"</script>')
+
+#   return HttpResponse('<script>alert("Invalid Request!");window.location="/report"</script>')
+
+def sendmail_report(request, id):
+    if request.user.is_company:
+        party = Party.objects.filter(company=request.user.company)
+    else:
+        party = Party.objects.filter(company=request.user.employee.company)
+        
+    if request.method == "POST":
+        try:
+         
+            fparty = Party.objects.get(id=id)
+            ftrans = Transactions_party.objects.filter(party=fparty)
+            cmp = fparty.company
+            itm=Invoice.objects.filter(company=cmp)
+            credit=CreditNote.objects.all().filter(company=cmp)
+            context = {'party': party, 'usr': request.user, 'fparty': fparty, 'ftrans': ftrans,'cmp':cmp,'itm':itm,'credit':credit}
+            
+            email_message = request.POST.get('email_message')
+            my_subject = "SALES REPORT"
+            emails_string = request.POST.get('email_ids')
+            emails_list = [email.strip() for email in emails_string.split(',')]
+            
+            html_message = render_to_string('report_pdf.html', context)
+            plain_message = strip_tags(html_message)
+            
+            pdf_content = BytesIO()
+            pisa.CreatePDF(html_message.encode("UTF-8"), pdf_content)
+            pdf_content.seek(0)
+
+            filename = f'report.pdf'
+            email=EmailMultiAlternatives(my_subject,f"Hi,\nPlease find the attached sales Report - \n{email_message}\n--\nRegards,\n{cmp.company_name},\n{cmp.address},{cmp.city},{cmp.country},\n{cmp.contact}\n",from_email='altostechnologies6@gmail.com',
+                                         to=emails_list, )
+       
+            email.attach(filename, pdf_content.read(), 'application/pdf')
+            email.send()
+
+            return HttpResponse('<script>alert("Report has been shared successfully!");window.location="/report"</script>')
+        except Party.DoesNotExist:
+            return HttpResponse('<script>alert("Party not found!");window.location="/report"</script>')
+        except Exception as e:
+            # Handle the exception, log the error, or provide an error message
+            return HttpResponse(f'<script>alert("Failed to send email: {str(e)}");window.location="/report"</script>')
+
+    return HttpResponse('<script>alert("Invalid Request!");window.location="/report"</script>')
+    
  
 
 
@@ -3726,61 +3831,167 @@ def report(request):
 
 
 
-def sendmail_report(request,id):
-  if request.user.is_company:
-        cmp = request.user.company
-        party = Party.objects.filter(company=request.user.company)
-  else:
-        cmp = request.user.employee
-        party = Party.objects.filter(company=request.user.employee.company)
+# def sendmail_report(request,id):
+#   if request.user.is_company:
+#         cmp = request.user.company
+#         party = Party.objects.filter(company=request.user.company)
+#   else:
+#         cmp = request.user.employee
+#         party = Party.objects.filter(company=request.user.employee.company)
         
-  if request.method == "POST":
-          try:
+#   if request.method == "POST":
+#           try:
           
-              fparty = Party.objects.get(id=id)
-              # ftrans = Transactions_party.objects.filter(party=fparty)
-              itm=Invoice.objects.filter(company=cmp)
-              credit=CreditNote.objects.all().filter(company=cmp)
-              cmp = fparty.company
-              context = {'party': party, 'usr': request.user, 'fparty': fparty, 'cmp':cmp,'itm':itm,'credit':credit}
+#               fparty = Party.objects.get(id=id)
+#               # ftrans = Transactions_party.objects.filter(party=fparty)
+#               itm=Invoice.objects.filter(company=cmp)
+#               credit=CreditNote.objects.all().filter(company=cmp)
+#               cmp = fparty.company
+#               context = {'party': party, 'usr': request.user, 'fparty': fparty, 'cmp':cmp,'itm':itm,'credit':credit}
               
-              email_message = request.POST.get('email_message')
-              my_subject = "SALES REPORT"
-              emails_string = request.POST.get('email_ids')
-              emails_list = [email.strip() for email in emails_string.split(',')]
+#               email_message = request.POST.get('email_message')
+#               my_subject = "SALES REPORT"
+#               emails_string = request.POST.get('email_ids')
+#               emails_list = [email.strip() for email in emails_string.split(',')]
               
-              html_message = render_to_string('report_pdf.html', context)
-              plain_message = strip_tags(html_message)
+#               html_message = render_to_string('report_pdf.html', context)
+#               plain_message = strip_tags(html_message)
               
-              pdf_content = BytesIO()
-              pisa.CreatePDF(html_message.encode("UTF-8"), pdf_content)
-              pdf_content.seek(0)
+#               pdf_content = BytesIO()
+#               pisa.CreatePDF(html_message.encode("UTF-8"), pdf_content)
+#               pdf_content.seek(0)
 
-              filename = f'report.pdf'
-              email=EmailMultiAlternatives(my_subject,f"Hi,\nPlease find the attached Sales Report - \n{email_message}\n--\nRegards,\n{cmp.company_name},\n{cmp.address},{cmp.city},{cmp.country},\n{cmp.contact}\n",from_email='altostechnologies6@gmail.com',
-                                          to=emails_list, )
+#               filename = f'report.pdf'
+#               email=EmailMultiAlternatives(my_subject,f"Hi,\nPlease find the attached Sales Report - \n{email_message}\n--\nRegards,\n{cmp.company_name},\n{cmp.address},{cmp.city},{cmp.country},\n{cmp.contact}\n",from_email='altostechnologies6@gmail.com',
+#                                           to=emails_list, )
         
-              email.attach(filename, pdf_content.read(), 'application/pdf')
-              email.send()
+#               email.attach(filename, pdf_content.read(), 'application/pdf')
+#               email.send()
 
-              return HttpResponse('<script>alert("Report has been shared successfully!");window.location="/report"</script>')
-          except Party.DoesNotExist:
-              return HttpResponse('<script>alert("Party not found!");window.location="/report"</script>')
-          except Exception as e:
-              # Handle the exception, log the error, or provide an error message
-              return HttpResponse(f'<script>alert("Failed to send email: {str(e)}");window.location="/report"</script>')
+#               return HttpResponse('<script>alert("Report has been shared successfully!");window.location="/report"</script>')
+#           except Party.DoesNotExist:
+#               return HttpResponse('<script>alert("Party not found!");window.location="/report"</script>')
+#           except Exception as e:
+#               # Handle the exception, log the error, or provide an error message
+#               return HttpResponse(f'<script>alert("Failed to send email: {str(e)}");window.location="/report"</script>')
 
-  return HttpResponse('<script>alert("Invalid Request!");window.location="/report"</script>')
-def sales_graph(request):
-        sales_data = Invoice.objects.all()
+#   return HttpResponse('<script>alert("Invalid Request!");window.location="/report"</script>')
+# def sales_graph(request):
     
 
-        sales_by_month = sales_data.annotate(month=TruncMonth('invoice_date')).values('month').annotate(total_sales=Sum('grandtotal'))
-        months = [entry['month'].strftime('%B %Y') for entry in sales_by_month]
-        total_sales = [float(entry['total_sales']) for entry in sales_by_month]
-        sales_by_year = sales_data.annotate(year=TruncYear('invoice_date')).values('year').annotate(total_sales=Sum('grandtotal'))
-        # years = [entry['year'].year for entry in sales_by_year]
-        years = [entry['year'].strftime(' %Y') for entry in sales_by_year]
-        total_yearly_sales = [float(entry['total_sales']) for entry in sales_by_year]
-        return render(request,'sales_graph.html',{'months': months, 'total_sales':total_sales,'years': years,
-      'total_yearly_sales': total_yearly_sales})
+    
+#     if request.user.is_company:
+#        cmp=request.user.company
+#     else:
+#        cmp=request.user.employee.company 
+#     invoices_monthly = Invoice.objects.filter(company=cmp).annotate(month=TruncMonth('invoice_date')).values('month').annotate(total=Sum('grandtotal'))
+#     credit_notes_monthly = CreditNote.objects.filter(company=cmp).annotate(month=TruncMonth('creditnote_date')).values('month').annotate(total=Sum('grandtotal'))
+
+    
+#     monthly_difference = {month_name[i]: 0 for i in range(1, 13)}
+
+    
+#     for month_data in invoices_monthly:
+#         month = month_data['month'].strftime('%B')
+#         monthly_difference[month] += float(month_data['total']) if month_data['total'] else 0
+
+#     for month_data in credit_notes_monthly:
+#         month = month_data['month'].strftime('%B')
+#         monthly_difference[month] -= float(month_data['total']) if month_data['total'] else 0
+
+    
+#     monthly_labels = list(monthly_difference.keys())
+#     monthly_data = list(monthly_difference.values())
+
+  
+#     invoices_yearly = Invoice.objects.filter(company=cmp).annotate(year=TruncYear('invoice_date')).values('year').annotate(total=Sum('grandtotal'))
+#     credit_notes_yearly = CreditNote.objects.filter(company=cmp).annotate(year=TruncYear('creditnote_date')).values('year').annotate(total=Sum('grandtotal'))
+
+
+#     yearly_difference = {year: 0 for year in range(2022, 2025)}
+
+
+#     for year_data in invoices_yearly:
+#         year = year_data['year'].year
+#         yearly_difference[year] += float(year_data['total']) if year_data['total'] else 0
+
+#     for year_data in credit_notes_yearly:
+#         year = year_data['year'].year
+#         yearly_difference[year] -= float(year_data['total']) if year_data['total'] else 0
+
+  
+#     yearly_labels = list(yearly_difference.keys())
+#     yearly_data = list(yearly_difference.values())
+
+#     return render(request, 'sales_graph.html', {
+#         'monthly_labels': json.dumps(monthly_labels),
+#         'monthly_data': json.dumps(monthly_data),
+#         'yearly_labels': json.dumps(yearly_labels),
+#         'yearly_data': json.dumps(yearly_data),
+#         'usr':request.user,'cmp':cmp
+
+#     })
+def sales_graph(request):
+
+    if request.user.is_company:
+        cmp = request.user.company
+    else:
+        cmp = request.user.employee.company
+    
+
+    invoices_monthly = Invoice.objects.filter(company=cmp).annotate(month=TruncMonth('invoice_date')).values('month').annotate(total=Sum('grandtotal'))
+    credit_notes_monthly = CreditNote.objects.filter(company=cmp).annotate(month=TruncMonth('creditnote_date')).values('month').annotate(total=Sum('grandtotal'))
+
+
+    monthly_difference = {month_name[i]: 0 for i in range(1, 13)}
+
+    
+    for month_data in invoices_monthly:
+        month = month_data['month'].strftime('%B')
+        monthly_difference[month] += float(month_data['total']) if month_data['total'] else 0
+
+    for month_data in credit_notes_monthly:
+        month = month_data['month'].strftime('%B')
+        monthly_difference[month] -= float(month_data['total']) if month_data['total'] else 0
+
+
+    monthly_labels = list(monthly_difference.keys())
+    monthly_data = list(monthly_difference.values())
+
+
+    invoices_yearly = Invoice.objects.filter(company=cmp).annotate(year=TruncYear('invoice_date')).values('year').annotate(total=Sum('grandtotal'))
+    credit_notes_yearly = CreditNote.objects.filter(company=cmp).annotate(year=TruncYear('creditnote_date')).values('year').annotate(total=Sum('grandtotal'))
+
+    
+    min_year = 2021
+    max_year = max(
+        max((data['year'].year for data in invoices_yearly), default=min_year),
+        max((data['year'].year for data in credit_notes_yearly), default=min_year)
+    )
+    years = list(range(min_year, max_year + 1))
+
+   
+    yearly_difference = {year: 0 for year in years}
+
+
+    for year_data in invoices_yearly:
+        year = year_data['year'].year
+        yearly_difference[year] += float(year_data['total']) if year_data['total'] else 0
+
+    for year_data in credit_notes_yearly:
+        year = year_data['year'].year
+        yearly_difference[year] -= float(year_data['total']) if year_data['total'] else 0
+
+
+    yearly_labels = list(yearly_difference.keys())
+    yearly_data = list(yearly_difference.values())
+
+
+    return render(request, 'sales_graph.html', {
+        'monthly_labels': json.dumps(monthly_labels),
+        'monthly_data': json.dumps(monthly_data),
+        'yearly_labels': json.dumps(yearly_labels),
+        'yearly_data': json.dumps(yearly_data),
+        'usr': request.user,
+        'cmp': cmp
+    })
